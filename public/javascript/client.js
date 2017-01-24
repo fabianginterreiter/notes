@@ -74,6 +74,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	function getLocation() {
+	  return window.location.href.split('?')[0];
+	}
+
 	var Welcome = function (_React$Component) {
 	  _inherits(Welcome, _React$Component);
 
@@ -98,16 +102,10 @@
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var category = nextProps.location.pathname;
-
-	      if (category.endsWith('.md')) {
-	        category = _path2.default.dirname(category);
-	      }
-
 	      this.setState({
-	        category: category,
+	        category: nextProps.location.query.category,
 	        tag: nextProps.location.query.tag,
-	        file: nextProps.location.query.file
+	        file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
 	      });
 	    }
 	  }, {
@@ -167,7 +165,7 @@
 	          { key: category.name },
 	          _react2.default.createElement(
 	            _reactRouter.Link,
-	            { to: category.dir + (_this4.props.file ? '?file=' + _this4.props.file : '') },
+	            { to: getLocation() + '?category=' + category.dir },
 	            category.name
 	          ),
 	          _react2.default.createElement(
@@ -188,7 +186,7 @@
 	        null,
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: '/' + (this.props.file ? '?file=' + this.props.file : '') },
+	          { to: getLocation() },
 	          'All'
 	        ),
 	        _react2.default.createElement(
@@ -227,7 +225,7 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this6 = this;
 
-	      fetch('/api/tags' + nextProps.category).then(function (result) {
+	      fetch('/api/tags/' + nextProps.category).then(function (result) {
 	        return result.json();
 	      }).then(function (tags) {
 	        return _this6.setState({ tags: tags });
@@ -249,7 +247,7 @@
 	            null,
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { to: this.props.category + (this.props.file ? '?file=' + this.props.file : '') },
+	              { to: getLocation() + (this.props.category ? '?category=' + this.props.category : '') },
 	              'All'
 	            )
 	          ),
@@ -259,7 +257,7 @@
 	              { key: tag },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
-	                { to: _this7.props.category + '?tag=' + tag + (_this7.props.file ? '&file=' + _this7.props.file : '') },
+	                { to: getLocation() + '?tag=' + tag + (_this7.props.category ? '&category=' + _this7.props.category : '') },
 	                tag
 	              )
 	            );
@@ -296,7 +294,7 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this9 = this;
 
-	      fetch('/api/notes' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
+	      fetch('/api/notes/' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
 	        return _this9.setState({ notes: notes });
@@ -305,11 +303,7 @@
 	  }, {
 	    key: 'getUrl',
 	    value: function getUrl(note) {
-	      if (this.props.tag) {
-	        return this.props.category + '?tag=' + this.props.tag + '&file=' + note.file;
-	      }
-
-	      return this.props.category + '?file=' + note.file;
+	      return note.file + (this.props.tag ? '?tag=' + this.props.tag : '') + (this.props.category ? (this.props.tag ? '&' : '?') + 'category=' + this.props.category : '');
 	    }
 	  }, {
 	    key: 'render',

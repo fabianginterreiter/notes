@@ -6,6 +6,10 @@ import { Router, Route, browserHistory, Redirect, IndexRoute, IndexRedirect, Lin
 import path from 'path'
 import ReactMarkdown from 'react-markdown'
 
+function getLocation() {
+  return window.location.href.split('?')[0];
+}
+
 class Welcome extends React.Component {
 
   constructor(props) {
@@ -23,16 +27,10 @@ class Welcome extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    var category = nextProps.location.pathname;
-
-    if (category.endsWith('.md')) {
-      category = path.dirname(category);
-    }
-
     this.setState({
-      category: category,
+      category: nextProps.location.query.category,
       tag: nextProps.location.query.tag,
-      file: nextProps.location.query.file
+      file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
     });
   }
 
@@ -67,7 +65,7 @@ class Categories extends React.Component {
 
     categories.forEach((category) => result.push(
       <li key={category.name}>
-        <Link to={category.dir + (this.props.file ? '?file=' + this.props.file : '')}>{category.name}</Link>
+        <Link to={getLocation() + '?category=' + category.dir}>{category.name}</Link>
       <ul>{this.renderCategories(category.categories)}</ul>
       </li>));
 
@@ -75,7 +73,7 @@ class Categories extends React.Component {
   }
 
   render() {
-    return (<div><Link to={'/' + (this.props.file ? '?file=' + this.props.file : '') }>All</Link>
+    return (<div><Link to={getLocation()}>All</Link>
         <ul>
         {this.renderCategories(this.state.categories)}</ul></div>);
   }
@@ -94,15 +92,15 @@ class Tags extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    fetch('/api/tags' + nextProps.category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
+    fetch('/api/tags/' + nextProps.category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
   }
 
   render() {
     return (<div>
       <ul>
-        <li><Link to={this.props.category + (this.props.file ? '?file=' + this.props.file : '')}>All</Link></li>
+        <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')}>All</Link></li>
       {this.state.tags.map((tag) => (
-        <li key={tag}><Link to={this.props.category + '?tag=' + tag + (this.props.file ? '&file=' + this.props.file : '')}>{tag}</Link></li>
+        <li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')}>{tag}</Link></li>
         ))}
       </ul></div>)
   }
@@ -122,15 +120,11 @@ class Notes extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    fetch('/api/notes' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
+    fetch('/api/notes/' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
   }
 
   getUrl(note) {
-    if (this.props.tag) {
-      return this.props.category + '?tag=' + this.props.tag + '&file=' + note.file;
-    }
-
-    return this.props.category + '?file=' + note.file;
+    return note.file + (this.props.tag ? '?tag=' + this.props.tag : '') + (this.props.category ? (this.props.tag ? '&' : '?') + 'category=' + this.props.category : '');
   }
 
   render() {
