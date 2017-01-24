@@ -92,11 +92,8 @@ class Tags extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.category) {
-      return;
-    }
-
-    fetch('/api/tags/' + nextProps.category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
+    var category = nextProps.category ? nextProps.category : '';
+    fetch('/api/tags/' + category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
   }
 
   render() {
@@ -104,7 +101,7 @@ class Tags extends React.Component {
       <ul>
         <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')}>All</Link></li>
       {this.state.tags.map((tag) => (
-        <li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')}>{tag}</Link></li>
+        <li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')}>#{tag}</Link></li>
         ))}
       </ul></div>)
   }
@@ -124,11 +121,8 @@ class Notes extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.category) {
-      return;
-    }
-
-    fetch('/api/notes/' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
+    var category = nextProps.category ? nextProps.category : '';
+    fetch('/api/notes/' + category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
   }
 
   getUrl(note) {
@@ -171,7 +165,6 @@ class Note extends React.Component {
     }
 
     return (<div>
-        <h1>{this.state.note.basename}</h1>
         <div><ReactMarkdown source={this.state.note.content} /></div>
       </div>)
   }

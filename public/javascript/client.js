@@ -225,11 +225,8 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this6 = this;
 
-	      if (!nextProps.category) {
-	        return;
-	      }
-
-	      fetch('/api/tags/' + nextProps.category).then(function (result) {
+	      var category = nextProps.category ? nextProps.category : '';
+	      fetch('/api/tags/' + category).then(function (result) {
 	        return result.json();
 	      }).then(function (tags) {
 	        return _this6.setState({ tags: tags });
@@ -262,6 +259,7 @@
 	              _react2.default.createElement(
 	                _reactRouter.Link,
 	                { to: getLocation() + '?tag=' + tag + (_this7.props.category ? '&category=' + _this7.props.category : '') },
+	                '#',
 	                tag
 	              )
 	            );
@@ -298,11 +296,8 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this9 = this;
 
-	      if (!nextProps.category) {
-	        return;
-	      }
-
-	      fetch('/api/notes/' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
+	      var category = nextProps.category ? nextProps.category : '';
+	      fetch('/api/notes/' + category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
 	        return _this9.setState({ notes: notes });
@@ -385,11 +380,6 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          this.state.note.basename
-	        ),
 	        _react2.default.createElement(
 	          'div',
 	          null,
