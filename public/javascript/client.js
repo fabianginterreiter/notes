@@ -83,9 +83,9 @@
 	    var _this = _possibleConstructorReturn(this, (Welcome.__proto__ || Object.getPrototypeOf(Welcome)).call(this, props));
 
 	    _this.state = {
-	      categories: [],
 	      category: '/',
-	      file: null
+	      file: null,
+	      tag: null
 	    };
 	    return _this;
 	  }
@@ -93,16 +93,7 @@
 	  _createClass(Welcome, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
-
 	      this.componentWillReceiveProps(this.props);
-	      fetch('/api/categories').then(function (result) {
-	        return result.json();
-	      }).then(function (categories) {
-	        return _this2.setState({
-	          categories: categories
-	        });
-	      });
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
@@ -120,9 +111,53 @@
 	      });
 	    }
 	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(Categories, { category: this.state.category, file: this.state.file }),
+	        _react2.default.createElement(Tags, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
+	        _react2.default.createElement(Notes, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
+	        _react2.default.createElement(Note, { file: this.state.file })
+	      );
+	    }
+	  }]);
+
+	  return Welcome;
+	}(_react2.default.Component);
+
+	var Categories = function (_React$Component2) {
+	  _inherits(Categories, _React$Component2);
+
+	  function Categories(props) {
+	    _classCallCheck(this, Categories);
+
+	    var _this2 = _possibleConstructorReturn(this, (Categories.__proto__ || Object.getPrototypeOf(Categories)).call(this, props));
+
+	    _this2.state = {
+	      categories: []
+	    };
+	    return _this2;
+	  }
+
+	  _createClass(Categories, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this3 = this;
+
+	      fetch('/api/categories').then(function (result) {
+	        return result.json();
+	      }).then(function (categories) {
+	        return _this3.setState({
+	          categories: categories
+	        });
+	      });
+	    }
+	  }, {
 	    key: 'renderCategories',
 	    value: function renderCategories(categories) {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      var result = [];
 
@@ -132,13 +167,13 @@
 	          { key: category.name },
 	          _react2.default.createElement(
 	            _reactRouter.Link,
-	            { to: category.dir },
+	            { to: category.dir + (_this4.props.file ? '?file=' + _this4.props.file : '') },
 	            category.name
 	          ),
 	          _react2.default.createElement(
 	            'ul',
 	            null,
-	            _this3.renderCategories(category.categories)
+	            _this4.renderCategories(category.categories)
 	          )
 	        ));
 	      });
@@ -153,36 +188,33 @@
 	        null,
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: '/' + (this.state.file ? '?file=' + this.state.file : '') },
+	          { to: '/' + (this.props.file ? '?file=' + this.props.file : '') },
 	          'All'
 	        ),
 	        _react2.default.createElement(
 	          'ul',
 	          null,
 	          this.renderCategories(this.state.categories)
-	        ),
-	        _react2.default.createElement(Tags, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
-	        _react2.default.createElement(Notes, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
-	        _react2.default.createElement(Note, { file: this.state.file })
+	        )
 	      );
 	    }
 	  }]);
 
-	  return Welcome;
+	  return Categories;
 	}(_react2.default.Component);
 
-	var Tags = function (_React$Component2) {
-	  _inherits(Tags, _React$Component2);
+	var Tags = function (_React$Component3) {
+	  _inherits(Tags, _React$Component3);
 
 	  function Tags(props) {
 	    _classCallCheck(this, Tags);
 
-	    var _this4 = _possibleConstructorReturn(this, (Tags.__proto__ || Object.getPrototypeOf(Tags)).call(this, props));
+	    var _this5 = _possibleConstructorReturn(this, (Tags.__proto__ || Object.getPrototypeOf(Tags)).call(this, props));
 
-	    _this4.state = {
+	    _this5.state = {
 	      tags: []
 	    };
-	    return _this4;
+	    return _this5;
 	  }
 
 	  _createClass(Tags, [{
@@ -193,18 +225,18 @@
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this5 = this;
+	      var _this6 = this;
 
 	      fetch('/api/tags' + nextProps.category).then(function (result) {
 	        return result.json();
 	      }).then(function (tags) {
-	        return _this5.setState({ tags: tags });
+	        return _this6.setState({ tags: tags });
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this6 = this;
+	      var _this7 = this;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -227,7 +259,7 @@
 	              { key: tag },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
-	                { to: _this6.props.category + '?tag=' + tag + (_this6.props.file ? '&file=' + _this6.props.file : '') },
+	                { to: _this7.props.category + '?tag=' + tag + (_this7.props.file ? '&file=' + _this7.props.file : '') },
 	                tag
 	              )
 	            );
@@ -240,18 +272,18 @@
 	  return Tags;
 	}(_react2.default.Component);
 
-	var Notes = function (_React$Component3) {
-	  _inherits(Notes, _React$Component3);
+	var Notes = function (_React$Component4) {
+	  _inherits(Notes, _React$Component4);
 
 	  function Notes(props) {
 	    _classCallCheck(this, Notes);
 
-	    var _this7 = _possibleConstructorReturn(this, (Notes.__proto__ || Object.getPrototypeOf(Notes)).call(this, props));
+	    var _this8 = _possibleConstructorReturn(this, (Notes.__proto__ || Object.getPrototypeOf(Notes)).call(this, props));
 
-	    _this7.state = {
+	    _this8.state = {
 	      notes: []
 	    };
-	    return _this7;
+	    return _this8;
 	  }
 
 	  _createClass(Notes, [{
@@ -262,12 +294,12 @@
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this8 = this;
+	      var _this9 = this;
 
 	      fetch('/api/notes' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
-	        return _this8.setState({ notes: notes });
+	        return _this9.setState({ notes: notes });
 	      });
 	    }
 	  }, {
@@ -282,7 +314,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this9 = this;
+	      var _this10 = this;
 
 	      var url = this.prop;
 
@@ -295,7 +327,7 @@
 	            { key: note.file },
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { to: _this9.getUrl(note) },
+	              { to: _this10.getUrl(note) },
 	              note.basename
 	            )
 	          );
@@ -307,18 +339,18 @@
 	  return Notes;
 	}(_react2.default.Component);
 
-	var Note = function (_React$Component4) {
-	  _inherits(Note, _React$Component4);
+	var Note = function (_React$Component5) {
+	  _inherits(Note, _React$Component5);
 
 	  function Note(props) {
 	    _classCallCheck(this, Note);
 
-	    var _this10 = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
+	    var _this11 = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
 
-	    _this10.state = {
+	    _this11.state = {
 	      note: null
 	    };
-	    return _this10;
+	    return _this11;
 	  }
 
 	  _createClass(Note, [{
@@ -329,12 +361,12 @@
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this11 = this;
+	      var _this12 = this;
 
 	      fetch('/api/note' + nextProps.file).then(function (result) {
 	        return result.json();
 	      }).then(function (note) {
-	        return _this11.setState({ note: note });
+	        return _this12.setState({ note: note });
 	      });
 	    }
 	  }, {

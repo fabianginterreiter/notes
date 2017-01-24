@@ -12,17 +12,14 @@ class Welcome extends React.Component {
     super(props);
 
     this.state = {
-      categories: [],
       category: '/',
-      file: null
+      file: null,
+      tag: null
     }
   }
 
   componentDidMount() {
     this.componentWillReceiveProps(this.props);
-    fetch('/api/categories').then((result) => result.json()).then((categories) => this.setState({
-      categories: categories
-    }));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,12 +36,38 @@ class Welcome extends React.Component {
     });
   }
 
+  render() {
+    return (
+      <div>
+        <Categories category={this.state.category} file={this.state.file} />
+        <Tags category={this.state.category} tag={this.state.tag} file={this.state.file} />
+        <Notes category={this.state.category} tag={this.state.tag} file={this.state.file} />
+        <Note file={this.state.file} />
+      </div>
+    );
+  }
+}
+
+class Categories extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      categories: []
+    }
+  }
+
+  componentDidMount() {
+    fetch('/api/categories').then((result) => result.json()).then((categories) => this.setState({
+      categories: categories
+    }));
+  }
+
   renderCategories(categories) {
     var result = [];
 
     categories.forEach((category) => result.push(
       <li key={category.name}>
-        <Link to={category.dir}>{category.name}</Link>
+        <Link to={category.dir + (this.props.file ? '?file=' + this.props.file : '')}>{category.name}</Link>
       <ul>{this.renderCategories(category.categories)}</ul>
       </li>));
 
@@ -52,16 +75,9 @@ class Welcome extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <Link to={'/' + (this.state.file ? '?file=' + this.state.file : '') }>All</Link>
+    return (<div><Link to={'/' + (this.props.file ? '?file=' + this.props.file : '') }>All</Link>
         <ul>
-        {this.renderCategories(this.state.categories)}</ul>
-        <Tags category={this.state.category} tag={this.state.tag} file={this.state.file} />
-        <Notes category={this.state.category} tag={this.state.tag} file={this.state.file} />
-        <Note file={this.state.file} />
-      </div>
-    );
+        {this.renderCategories(this.state.categories)}</ul></div>);
   }
 }
 
