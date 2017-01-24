@@ -75,7 +75,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	function getLocation() {
-	  return window.location.href.split('?')[0];
+	  return window.location.pathname;
 	}
 
 	var Welcome = function (_React$Component) {
@@ -225,6 +225,10 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this6 = this;
 
+	      if (!nextProps.category) {
+	        return;
+	      }
+
 	      fetch('/api/tags/' + nextProps.category).then(function (result) {
 	        return result.json();
 	      }).then(function (tags) {
@@ -294,6 +298,10 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this9 = this;
 
+	      if (!nextProps.category) {
+	        return;
+	      }
+
 	      fetch('/api/notes/' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
@@ -356,6 +364,10 @@
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
 	      var _this12 = this;
+
+	      if (!nextProps.file) {
+	        return;
+	      }
 
 	      fetch('/api/note' + nextProps.file).then(function (result) {
 	        return result.json();

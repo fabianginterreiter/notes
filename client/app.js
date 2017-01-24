@@ -7,7 +7,7 @@ import path from 'path'
 import ReactMarkdown from 'react-markdown'
 
 function getLocation() {
-  return window.location.href.split('?')[0];
+  return window.location.pathname;
 }
 
 class Welcome extends React.Component {
@@ -92,6 +92,10 @@ class Tags extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (!nextProps.category) {
+      return;
+    }
+
     fetch('/api/tags/' + nextProps.category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
   }
 
@@ -120,6 +124,10 @@ class Notes extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (!nextProps.category) {
+      return;
+    }
+
     fetch('/api/notes/' + nextProps.category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
   }
 
@@ -150,6 +158,10 @@ class Note extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (!nextProps.file) {
+      return;
+    }
+
     fetch('/api/note' + nextProps.file).then((result) => result.json()).then((note) => this.setState({note:note}));
   }
 

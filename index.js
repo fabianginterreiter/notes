@@ -26,7 +26,7 @@ function read(file) {
 
     tagsMatches.forEach((tag) => result.tags.push(tag.substring(1)));
 
-    result.file = file;
+    result.file = path.join(path.dirname(file), path.basename(file, '.md'));
     result.basename = path.basename(file);
 		
   	return result;
@@ -81,11 +81,15 @@ function scan(dir) {
         if (stat.isDirectory()) {
           return scan(filepath).then((r) => result.directories[file] = r);
         } else {
+          if (path.extname(file) !== '.md') {
+            return Promise.resolve(true);
+          }
+
           return read(filepath).then((r) => {
             r.created_at = stat.birthtime;
             r.updated_at = stat.mtime;
 
-            result.files[file] = r            
+            result.files[path.basename(file, '.md')] = r            
           });
         }
       }))
@@ -210,7 +214,7 @@ function getDirs(path) {
 function getNote(category, file) {
   var file = category.files[file];
 
-  return readFile(file.file).then((data) => {
+  return readFile(file.file + '.md').then((data) => {
     file.content = data
     return file;
   });
@@ -240,6 +244,7 @@ app.get('/api/note/*', (req, res) => {
 });
 
 app.use(express.static('public'));
+app.use(express.static('files'));
 
 app.get('*', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
