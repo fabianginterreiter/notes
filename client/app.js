@@ -36,7 +36,7 @@ class Welcome extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <Categories category={this.state.category} file={this.state.file} />
         <Tags category={this.state.category} tag={this.state.tag} file={this.state.file} />
         <Notes category={this.state.category} tag={this.state.tag} file={this.state.file} />
@@ -73,7 +73,7 @@ class Categories extends React.Component {
   }
 
   render() {
-    return (<div><Link to={getLocation()}>All</Link>
+    return (<div className="categories panel"><Link to={getLocation()}>All</Link>
         <ul>
         {this.renderCategories(this.state.categories)}</ul></div>);
   }
@@ -97,7 +97,7 @@ class Tags extends React.Component {
   }
 
   render() {
-    return (<div>
+    return (<div className="tags panel">
       <ul>
         <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')}>All</Link></li>
       {this.state.tags.map((tag) => (
@@ -132,9 +132,9 @@ class Notes extends React.Component {
   render() {
     var url = this.prop
 
-    return (<ul>
+    return (<div className="notes panel"><ul>
       {this.state.notes.map((note) => (<li key={note.file}><Link to={this.getUrl(note)}>{note.basename}</Link></li>))}
-      </ul>)
+      </ul></div>)
   }
 }
 
@@ -164,8 +164,9 @@ class Note extends React.Component {
       return (<span />);
     }
 
-    return (<div>
-        <div><ReactMarkdown source={this.state.note.content} /></div>
+    return (<div className="note">
+        <div className="content"><ReactMarkdown source={this.state.note.content} /></div>
+        <div className="status">{this.state.note.file}</div>
       </div>)
   }
 }

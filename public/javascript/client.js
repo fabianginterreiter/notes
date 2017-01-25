@@ -113,7 +113,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'container' },
 	        _react2.default.createElement(Categories, { category: this.state.category, file: this.state.file }),
 	        _react2.default.createElement(Tags, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
 	        _react2.default.createElement(Notes, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
@@ -183,7 +183,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'categories panel' },
 	        _react2.default.createElement(
 	          _reactRouter.Link,
 	          { to: getLocation() },
@@ -239,7 +239,7 @@
 
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'tags panel' },
 	        _react2.default.createElement(
 	          'ul',
 	          null,
@@ -316,19 +316,23 @@
 	      var url = this.prop;
 
 	      return _react2.default.createElement(
-	        'ul',
-	        null,
-	        this.state.notes.map(function (note) {
-	          return _react2.default.createElement(
-	            'li',
-	            { key: note.file },
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: _this10.getUrl(note) },
-	              note.basename
-	            )
-	          );
-	        })
+	        'div',
+	        { className: 'notes panel' },
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          this.state.notes.map(function (note) {
+	            return _react2.default.createElement(
+	              'li',
+	              { key: note.file },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: _this10.getUrl(note) },
+	                note.basename
+	              )
+	            );
+	          })
+	        )
 	      );
 	    }
 	  }]);
@@ -379,11 +383,16 @@
 
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'note' },
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'content' },
 	          _react2.default.createElement(_reactMarkdown2.default, { source: this.state.note.content })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'status' },
+	          this.state.note.file
 	        )
 	      );
 	    }
