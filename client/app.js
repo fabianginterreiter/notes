@@ -61,6 +61,12 @@ class Categories extends React.Component {
     }));
   }
 
+  toggleCategory(e, category) {
+    e.preventDefault();
+    category.open = !category.open;
+    this.forceUpdate();
+  }
+
   renderCategories(categories, deep) {
     var result = [];
 
@@ -68,11 +74,30 @@ class Categories extends React.Component {
       paddingLeft: (10 + deep * 10) + 'px'
     }
 
-    categories.forEach((category) => result.push(
-      <li key={category.name} >
-        <Link style={style} to={getLocation() + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>{category.name}</Link>
-      <ul>{this.renderCategories(category.categories, deep + 1)}</ul>
-      </li>));
+    categories.forEach((category) => {
+      if (category.categories.length === 0) {
+        result.push(
+          <li key={category.name} >
+            <Link style={style} to={getLocation() + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>{category.name}</Link>
+          </li>)
+      } else {
+        var sub = null;
+        if (category.open) {
+          sub = (<ul>{this.renderCategories(category.categories, deep + 1)}</ul>);
+        }
+
+        result.push(
+          <li key={category.name} >
+            <Link style={style} to={getLocation() + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>
+            {category.name}
+            <span className="badge" onClick={(e) => this.toggleCategory(e, category)}>Open</span>
+          </Link>
+            {sub}
+          </li>)  
+      }
+
+      
+    });
 
     return result;
   }
@@ -90,7 +115,8 @@ class Tags extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tags: []
+      tags: [],
+      filter: ''
     }
   }
 
@@ -103,15 +129,29 @@ class Tags extends React.Component {
     fetch('/api/tags/' + category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
   }
 
+  handleChange(e) {
+    this.setState({
+      filter: e.target.value
+    });
+  }
+
+  renderTag(tag) {
+    if (!tag.startsWith(this.state.filter)) {
+      return null;
+    }
+
+    return (<li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')} className={(this.props.tag === tag ? 'active' : '')}>#{tag}</Link></li>);
+  }
+
   render() {
     return (<div className="tags panel">
+      <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
       <ul>
         <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')} className={(!this.props.tag ? 'active' : '')}>All</Link></li>
-        <li className="divider" />
-      {this.state.tags.map((tag) => (
-        <li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')} className={(this.props.tag === tag ? 'active' : '')}>#{tag}</Link></li>
-        ))}
-      </ul></div>)
+          <li className="divider" />
+          {this.state.tags.map((tag) => this.renderTag(tag))}
+      </ul>
+    </div>)
   }
 }
 

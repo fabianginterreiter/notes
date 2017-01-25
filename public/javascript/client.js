@@ -157,6 +157,13 @@
 	      });
 	    }
 	  }, {
+	    key: 'toggleCategory',
+	    value: function toggleCategory(e, category) {
+	      e.preventDefault();
+	      category.open = !category.open;
+	      this.forceUpdate();
+	    }
+	  }, {
 	    key: 'renderCategories',
 	    value: function renderCategories(categories, deep) {
 	      var _this4 = this;
@@ -168,20 +175,44 @@
 	      };
 
 	      categories.forEach(function (category) {
-	        return result.push(_react2.default.createElement(
-	          'li',
-	          { key: category.name },
-	          _react2.default.createElement(
-	            _reactRouter.Link,
-	            { style: style, to: getLocation() + '?category=' + category.dir, className: _this4.props.category === category.dir ? 'active' : '' },
-	            category.name
-	          ),
-	          _react2.default.createElement(
-	            'ul',
-	            null,
-	            _this4.renderCategories(category.categories, deep + 1)
-	          )
-	        ));
+	        if (category.categories.length === 0) {
+	          result.push(_react2.default.createElement(
+	            'li',
+	            { key: category.name },
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { style: style, to: getLocation() + '?category=' + category.dir, className: _this4.props.category === category.dir ? 'active' : '' },
+	              category.name
+	            )
+	          ));
+	        } else {
+	          var sub = null;
+	          if (category.open) {
+	            sub = _react2.default.createElement(
+	              'ul',
+	              null,
+	              _this4.renderCategories(category.categories, deep + 1)
+	            );
+	          }
+
+	          result.push(_react2.default.createElement(
+	            'li',
+	            { key: category.name },
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { style: style, to: getLocation() + '?category=' + category.dir, className: _this4.props.category === category.dir ? 'active' : '' },
+	              category.name,
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'badge', onClick: function onClick(e) {
+	                    return _this4.toggleCategory(e, category);
+	                  } },
+	                'Open'
+	              )
+	            ),
+	            sub
+	          ));
+	        }
 	      });
 
 	      return result;
@@ -223,7 +254,8 @@
 	    var _this5 = _possibleConstructorReturn(this, (Tags.__proto__ || Object.getPrototypeOf(Tags)).call(this, props));
 
 	    _this5.state = {
-	      tags: []
+	      tags: [],
+	      filter: ''
 	    };
 	    return _this5;
 	  }
@@ -246,6 +278,31 @@
 	      });
 	    }
 	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      this.setState({
+	        filter: e.target.value
+	      });
+	    }
+	  }, {
+	    key: 'renderTag',
+	    value: function renderTag(tag) {
+	      if (!tag.startsWith(this.state.filter)) {
+	        return null;
+	      }
+
+	      return _react2.default.createElement(
+	        'li',
+	        { key: tag },
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : ''), className: this.props.tag === tag ? 'active' : '' },
+	          '#',
+	          tag
+	        )
+	      );
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this7 = this;
@@ -253,6 +310,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'tags panel' },
+	        _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' }),
 	        _react2.default.createElement(
 	          'ul',
 	          null,
@@ -267,16 +325,7 @@
 	          ),
 	          _react2.default.createElement('li', { className: 'divider' }),
 	          this.state.tags.map(function (tag) {
-	            return _react2.default.createElement(
-	              'li',
-	              { key: tag },
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: getLocation() + '?tag=' + tag + (_this7.props.category ? '&category=' + _this7.props.category : ''), className: _this7.props.tag === tag ? 'active' : '' },
-	                '#',
-	                tag
-	              )
-	            );
+	            return _this7.renderTag(tag);
 	          })
 	        )
 	      );

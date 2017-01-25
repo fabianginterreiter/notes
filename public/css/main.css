@@ -36,7 +36,13 @@ body {
     text-decoration: none;
     display: block;
     padding: 3px 10px;
-    color: #333; }
+    color: #333;
+    position: relative; }
+    .categories a .badge {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0; }
   .categories a.active {
     background-color: brown;
     font-weight: bold; }

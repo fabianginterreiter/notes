@@ -47,6 +47,14 @@ body {
     display: block;
     padding: 3px 10px;
     color: #333;
+    position: relative;
+
+    .badge {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+    }
   }
 
   a.active {
@@ -90,7 +98,6 @@ li.divider {
     font-weight: bold;
   }
 
-  
 }
 
 
