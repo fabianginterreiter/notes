@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom'
 import { Router, Route, browserHistory, Redirect, IndexRoute, IndexRedirect, Link } from 'react-router'
 import path from 'path'
 import ReactMarkdown from 'react-markdown'
+import moment from 'moment'
 
 function getLocation() {
   return window.location.pathname;
@@ -60,22 +61,28 @@ class Categories extends React.Component {
     }));
   }
 
-  renderCategories(categories) {
+  renderCategories(categories, deep) {
     var result = [];
 
+    var style = {
+      paddingLeft: (10 + deep * 10) + 'px'
+    }
+
     categories.forEach((category) => result.push(
-      <li key={category.name}>
-        <Link to={getLocation() + '?category=' + category.dir}>{category.name}</Link>
-      <ul>{this.renderCategories(category.categories)}</ul>
+      <li key={category.name} >
+        <Link style={style} to={getLocation() + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>{category.name}</Link>
+      <ul>{this.renderCategories(category.categories, deep + 1)}</ul>
       </li>));
 
     return result;
   }
 
   render() {
-    return (<div className="categories panel"><Link to={getLocation()}>All</Link>
+    return (<div className="categories panel">
         <ul>
-        {this.renderCategories(this.state.categories)}</ul></div>);
+        <li><Link to={getLocation()} className={(!this.props.category ? 'active' : '')}>All</Link></li>
+        <li className="divider" />
+        {this.renderCategories(this.state.categories, 0)}</ul></div>);
   }
 }
 
@@ -99,9 +106,10 @@ class Tags extends React.Component {
   render() {
     return (<div className="tags panel">
       <ul>
-        <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')}>All</Link></li>
+        <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')} className={(!this.props.tag ? 'active' : '')}>All</Link></li>
+        <li className="divider" />
       {this.state.tags.map((tag) => (
-        <li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')}>#{tag}</Link></li>
+        <li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')} className={(this.props.tag === tag ? 'active' : '')}>#{tag}</Link></li>
         ))}
       </ul></div>)
   }
@@ -133,7 +141,11 @@ class Notes extends React.Component {
     var url = this.prop
 
     return (<div className="notes panel"><ul>
-      {this.state.notes.map((note) => (<li key={note.file}><Link to={this.getUrl(note)}>{note.basename}</Link></li>))}
+      {this.state.notes.map((note) => (<li key={note.file}>
+        <Link to={this.getUrl(note)} className={(this.props.file === note.file ? 'active' : '')}>
+        <div className="title">{note.basename}</div>
+        {moment(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')}
+        </Link></li>))}
       </ul></div>)
   }
 }
@@ -166,7 +178,6 @@ class Note extends React.Component {
 
     return (<div className="note">
         <div className="content"><ReactMarkdown source={this.state.note.content} /></div>
-        <div className="status">{this.state.note.file}</div>
       </div>)
   }
 }
