@@ -183,8 +183,8 @@ class Notes extends React.Component {
     return (<div className="notes panel"><ul>
       {this.state.notes.map((note) => (<li key={note.file}>
         <Link to={this.getUrl(note)} className={(this.props.file === note.file ? 'active' : '')}>
-        <div className="title">{note.basename}</div>
-        {moment(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')}
+        <div className="title">{(note.title ? note.title : note.basename)}</div>
+        <span className="date">{moment(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')}</span>
         </Link></li>))}
       </ul></div>)
   }

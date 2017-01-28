@@ -2,106 +2,12 @@ var fs = require("fs"),
     path = require("path"),
     util = require("util");
 	
+var readFile = require('./lib/readFile');
 	
-var titleRegExp = new RegExp("([^\\n]*)\\n=+\\n");
-var tagsRegExp = /(#[a-zA-Z0-9_]+)/g;
+var scan = require('./lib/scan');
 	
-var content;
-
-function read(file) {
-	return readFile(file).then((data) => {
-		var matches = data.match(titleRegExp);
-		
-		var result = {
-			
-		};
-		
-		if (matches && matches.length) {
-			result.title = matches[1];
-		}
-		
-		var tagsMatches = data.match(tagsRegExp);
-		
-		result.tags = [];
-
-    tagsMatches.forEach((tag) => result.tags.push(tag.substring(1)));
-
-    result.file = path.join(path.dirname(file), path.basename(file, '.md'));
-    result.basename = path.basename(file);
-		
-  	return result;
-	});
-}
-
-function readFile(file) {
-  return new Promise((resolve, reject) => fs.readFile(path.join(__dirname, 'files', file), 'utf8', (err, data) => {
-    if (err) {
-      return reject(err);
-    }
-
-    resolve(data);
-  }));
-}
-
-function stat(file) {
-  return new Promise((resolve, reject) => fs.stat(path.join(__dirname, 'files', file), (err, stat) => {
-    if (err) {
-      return reject(err);
-    }
-
-    resolve(stat);
-  }));
-}
-
-function scan(dir) {
-  var result = {
-    files: {},
-    directories: {}
-  };
-
-  if (!dir) {
-    dir = '/';
-  }
-
-  result.dir = dir;
-
-  result.category = path.basename(dir);
-
-	return new Promise((resolve, reject) => fs.readdir(path.join(__dirname, 'files', dir), (err, list) => {
-		if (err) {
-			return reject(err);
-		}
-
-    var promises = [];
-
-    list.forEach((file) => {
-      var filepath = path.join(dir, file);
-
-      promises.push(stat(filepath).then((stat) => {
-        if (stat.isDirectory()) {
-          return scan(filepath).then((r) => result.directories[file] = r);
-        } else {
-          if (path.extname(file) !== '.md') {
-            return Promise.resolve(true);
-          }
-
-          return read(filepath).then((r) => {
-            r.created_at = stat.birthtime;
-            r.updated_at = stat.mtime;
-
-            result.files[path.basename(file, '.md')] = r            
-          });
-        }
-      }))
-    });
-
-    return Promise.all(promises).then(() => resolve(result));
-	}));
-}
-
 var data = null;
-scan().then((d) => (data = d));
-
+scan(path.join(__dirname, "files")).then((d) => (data = d)).catch(console.log);
 
 var express = require('express');
 var app = express();
@@ -111,6 +17,10 @@ app.get('/api/all', function (req, res) {
 });
 
 function getTags(category) {
+  if (!category) {
+    return [];
+  }
+
   var tags = {};
 
   for (var key in category.files) {
@@ -123,9 +33,9 @@ function getTags(category) {
   };
 
   for (var key in category.directories) {
-    var category = category.directories[key];
+    var c = category.directories[key];
 
-    getTags(category).forEach((tag) => {
+    getTags(c).forEach((tag) => {
       if (!tags[tag]) {
         tags[tag] = true;
       }
@@ -150,6 +60,10 @@ function contains(tags, tag) {
 }
 
 function getNotes(category, tag) {
+  if (!category) {
+    return [];
+  }
+
   var notes = [];
 
   for (var key in category.files) {
@@ -161,9 +75,9 @@ function getNotes(category, tag) {
   };
 
   for (var key in category.directories) {
-    var category = category.directories[key];
+    var c = category.directories[key];
 
-    getNotes(category, tag).forEach((note) => {
+    getNotes(c, tag).forEach((note) => {
       notes.push(note);
     });
   };
@@ -172,6 +86,10 @@ function getNotes(category, tag) {
 }
 
 function getCategories(category) {
+  if (!category) {
+    return [];
+  }
+
   var result = [];
 
   for (var key in category.directories) {
@@ -214,7 +132,7 @@ function getDirs(path) {
 function getNote(category, file) {
   var file = category.files[file];
 
-  return readFile(file.file + '.md').then((data) => {
+  return readFile(path.join(__dirname, 'files', file.file + '.md')).then((data) => {
     file.content = data
     return file;
   });

@@ -30,7 +30,7 @@ body {
 
 .categories {
   width: 300px;
-  background-color: #ededed;
+  background-color: #383838;
 
   ul {
     padding: 0;
@@ -42,11 +42,10 @@ body {
   }
 
   a {
-    color: #565656;
+    color: #f7f7f7;
     text-decoration: none;
     display: block;
     padding: 3px 10px;
-    color: #333;
     position: relative;
 
     .badge {
@@ -58,16 +57,16 @@ body {
   }
 
   a.active {
-    background-color: brown;
-    font-weight: bold;
+    background-color: #1e1e1e;
+  }
+
+  li.divider {
+    height: 1px;
+    margin: 5px 0;
   }
 }
 
-li.divider {
-    height: 1px;
-    margin: 5px 0;
-    background-color: #333;
-  }
+
 
 .panel {
   border-right: 1px solid #565656;
@@ -88,14 +87,18 @@ li.divider {
 
   a {
     display: block;
-    padding: 3px 10px;
+    padding: 5px 10px;
     text-decoration: none;
     color: #333;
   }
 
   a.active {
-    background-color: brown;
-    font-weight: bold;
+    background-color: #7aadff;
+  }
+
+  li.divider {
+    height: 1px;
+    margin: 5px 0;
   }
 
 }
@@ -120,14 +123,19 @@ li.divider {
     display: block;
     padding: 3px 10px;
     color: #333;
+    text-decoration: none;
 
     .title {
       font-weight: bold;
     }
+
+    .date {
+      font-size: 0.8em;
+    }
   }
 
     a.active {
-    background-color: brown;
+    background-color: #a5c7ff;
   }
 }
 

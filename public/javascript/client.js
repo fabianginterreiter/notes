@@ -394,9 +394,13 @@
 	                _react2.default.createElement(
 	                  'div',
 	                  { className: 'title' },
-	                  note.basename
+	                  note.title ? note.title : note.basename
 	                ),
-	                (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
+	                _react2.default.createElement(
+	                  'span',
+	                  { className: 'date' },
+	                  (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
+	                )
 	              )
 	            );
 	          })

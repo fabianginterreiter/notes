@@ -25,18 +25,17 @@ body {
 
 .categories {
   width: 300px;
-  background-color: #ededed; }
+  background-color: #383838; }
   .categories ul {
     padding: 0;
     margin: 0; }
   .categories li {
     list-style: none; }
   .categories a {
-    color: #565656;
+    color: #f7f7f7;
     text-decoration: none;
     display: block;
     padding: 3px 10px;
-    color: #333;
     position: relative; }
     .categories a .badge {
       position: absolute;
@@ -44,13 +43,10 @@ body {
       top: 0;
       bottom: 0; }
   .categories a.active {
-    background-color: brown;
-    font-weight: bold; }
-
-li.divider {
-  height: 1px;
-  margin: 5px 0;
-  background-color: #333; }
+    background-color: #1e1e1e; }
+  .categories li.divider {
+    height: 1px;
+    margin: 5px 0; }
 
 .panel {
   border-right: 1px solid #565656; }
@@ -65,12 +61,14 @@ li.divider {
     list-style: none; }
   .tags a {
     display: block;
-    padding: 3px 10px;
+    padding: 5px 10px;
     text-decoration: none;
     color: #333; }
   .tags a.active {
-    background-color: brown;
-    font-weight: bold; }
+    background-color: #7aadff; }
+  .tags li.divider {
+    height: 1px;
+    margin: 5px 0; }
 
 .notes {
   width: 300px; }
@@ -84,11 +82,14 @@ li.divider {
   .notes a {
     display: block;
     padding: 3px 10px;
-    color: #333; }
+    color: #333;
+    text-decoration: none; }
     .notes a .title {
       font-weight: bold; }
+    .notes a .date {
+      font-size: 0.8em; }
   .notes a.active {
-    background-color: brown; }
+    background-color: #a5c7ff; }
 
 .note {
   width: 100%;
