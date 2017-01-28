@@ -132,7 +132,7 @@ function getDirs(path) {
 function getNote(category, file) {
   var file = category.files[file];
 
-  return readFile(path.join(__dirname, 'files', file.file + '.md')).then((data) => {
+  return readFile(path.join(__dirname, 'files', file.file)).then((data) => {
     file.content = data
     return file;
   });
@@ -158,10 +158,23 @@ app.get('/api/notes*', (req, res) => {
 
 app.get('/api/note/*', (req, res) => {
   var file = path.basename(req.params[0]);
-  getNote(getCategory(data, getDirs(path.dirname(req.params[0])), 0), file).then((file) => res.send(file));
+  var dir = path.dirname(req.params[0]);
+  console.log(file);
+  console.log(dir)
+
+
+  getNote(getCategory(data, getDirs(dir), 0), file).then((file) => res.send(file));
 });
 
 app.use(express.static('public'));
+
+app.use('*', (req, res, next) => {
+  if (req.params[0].endsWith('.md')) {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'))  
+  } else {
+    next();
+  }
+});
 app.use(express.static('files'));
 
 app.get('*', function(req, res) {
