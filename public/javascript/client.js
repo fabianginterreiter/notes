@@ -46,8 +46,6 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -62,491 +60,16 @@
 
 	var _path2 = _interopRequireDefault(_path);
 
-	var _reactMarkdown = __webpack_require__(7);
+	var _Home = __webpack_require__(123);
 
-	var _reactMarkdown2 = _interopRequireDefault(_reactMarkdown);
-
-	var _moment = __webpack_require__(8);
-
-	var _moment2 = _interopRequireDefault(_moment);
+	var _Home2 = _interopRequireDefault(_Home);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	function getLocation() {
-	  return window.location.pathname;
-	}
-
-	var Welcome = function (_React$Component) {
-	  _inherits(Welcome, _React$Component);
-
-	  function Welcome(props) {
-	    _classCallCheck(this, Welcome);
-
-	    var _this = _possibleConstructorReturn(this, (Welcome.__proto__ || Object.getPrototypeOf(Welcome)).call(this, props));
-
-	    _this.state = {
-	      category: '/',
-	      file: null,
-	      tags: null
-	    };
-	    return _this;
-	  }
-
-	  _createClass(Welcome, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.componentWillReceiveProps(this.props);
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      this.setState({
-	        category: nextProps.location.query.category,
-	        tags: nextProps.location.query.tags,
-	        file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'container' },
-	        _react2.default.createElement(Categories, { category: this.state.category, file: this.state.file }),
-	        _react2.default.createElement(Tags, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
-	        _react2.default.createElement(Notes, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
-	        _react2.default.createElement(Note, { file: this.state.file })
-	      );
-	    }
-	  }]);
-
-	  return Welcome;
-	}(_react2.default.Component);
-
-	var Categories = function (_React$Component2) {
-	  _inherits(Categories, _React$Component2);
-
-	  function Categories(props) {
-	    _classCallCheck(this, Categories);
-
-	    var _this2 = _possibleConstructorReturn(this, (Categories.__proto__ || Object.getPrototypeOf(Categories)).call(this, props));
-
-	    _this2.state = {
-	      categories: []
-	    };
-	    return _this2;
-	  }
-
-	  _createClass(Categories, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this3 = this;
-
-	      fetch('/api/categories').then(function (result) {
-	        return result.json();
-	      }).then(function (categories) {
-	        return _this3.setState({
-	          categories: categories
-	        });
-	      });
-	    }
-	  }, {
-	    key: 'toggleCategory',
-	    value: function toggleCategory(e, category) {
-	      e.preventDefault();
-	      category.open = !category.open;
-	      this.forceUpdate();
-	    }
-	  }, {
-	    key: 'renderCategories',
-	    value: function renderCategories(categories, deep) {
-	      var _this4 = this;
-
-	      var result = [];
-
-	      var style = {
-	        paddingLeft: 10 + deep * 10 + 'px'
-	      };
-
-	      categories.forEach(function (category) {
-	        if (category.categories.length === 0) {
-	          result.push(_react2.default.createElement(
-	            'li',
-	            { key: category.name },
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { style: style, to: getLocation() + '?category=' + category.dir, className: _this4.props.category === category.dir ? 'active' : '' },
-	              category.name
-	            )
-	          ));
-	        } else {
-	          var sub = null;
-	          if (category.open) {
-	            sub = _react2.default.createElement(
-	              'ul',
-	              null,
-	              _this4.renderCategories(category.categories, deep + 1)
-	            );
-	          }
-
-	          result.push(_react2.default.createElement(
-	            'li',
-	            { key: category.name },
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { style: style, to: getLocation() + '?category=' + category.dir, className: _this4.props.category === category.dir ? 'active' : '' },
-	              category.title,
-	              _react2.default.createElement(
-	                'span',
-	                { className: 'badge', onClick: function onClick(e) {
-	                    return _this4.toggleCategory(e, category);
-	                  } },
-	                _react2.default.createElement('i', { className: 'fa fa-chevron-' + (category.open ? 'down' : 'up') })
-	              )
-	            ),
-	            sub
-	          ));
-	        }
-	      });
-
-	      return result;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'categories panel' },
-	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: getLocation(), className: !this.props.category ? 'active' : '' },
-	              'All'
-	            )
-	          ),
-	          _react2.default.createElement('li', { className: 'divider' }),
-	          this.renderCategories(this.state.categories, 0)
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Categories;
-	}(_react2.default.Component);
-
-	var Tags = function (_React$Component3) {
-	  _inherits(Tags, _React$Component3);
-
-	  function Tags(props) {
-	    _classCallCheck(this, Tags);
-
-	    var _this5 = _possibleConstructorReturn(this, (Tags.__proto__ || Object.getPrototypeOf(Tags)).call(this, props));
-
-	    _this5.state = {
-	      tags: [],
-	      filter: '',
-	      addTags: []
-	    };
-	    return _this5;
-	  }
-
-	  _createClass(Tags, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.componentWillReceiveProps(this.props);
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var _this6 = this;
-
-	      var category = nextProps.category ? nextProps.category : '';
-	      fetch('/api/tags/' + category).then(function (result) {
-	        return result.json();
-	      }).then(function (tags) {
-	        return _this6.setState({ tags: tags });
-	      });
-
-	      if (nextProps.tags) {
-	        fetch('/api/tags/' + category + '?tags=' + nextProps.tags).then(function (result) {
-	          return result.json();
-	        }).then(function (tags) {
-	          return _this6.setState({ addTags: tags });
-	        });
-	      } else {
-	        this.setState({ addTags: [] });
-	      }
-	    }
-	  }, {
-	    key: 'handleChange',
-	    value: function handleChange(e) {
-	      this.setState({
-	        filter: e.target.value
-	      });
-	    }
-	  }, {
-	    key: 'renderPlusButton',
-	    value: function renderPlusButton(tag) {
-	      if (!this.props.tags) {
-	        return null;
-	      }
-
-	      if (this.isActive(tag)) {
-	        var s = this.props.tags.split(',');
-
-	        for (var index = 0; index < s.length; index++) {
-	          if (s[index] === tag) {
-	            s.splice(index, 1);
-	            break;
-	          }
-	        }
-
-	        var url = null;
-
-	        if (s.length === 0) {
-	          url = getLocation() + (this.props.category ? '?category=' + this.props.category : '');
-	        } else {
-	          url = getLocation() + '?tags=' + s.join(',') + (this.props.category ? '&category=' + this.props.category : '');
-	        }
-
-	        return _react2.default.createElement(
-	          _reactRouter.Link,
-	          { className: 'badge', to: url },
-	          _react2.default.createElement('i', { className: 'fa fa-minus-square' })
-	        );
-	      }
-
-	      if (!this.contains(this.state.addTags, tag)) {
-	        return null;
-	      }
-
-	      return _react2.default.createElement(
-	        _reactRouter.Link,
-	        { className: 'badge', to: getLocation() + '?tags=' + this.props.tags + ',' + tag + (this.props.category ? '&category=' + this.props.category : '') },
-	        _react2.default.createElement('i', { className: 'fa fa-plus-square' })
-	      );
-	    }
-	  }, {
-	    key: 'renderTag',
-	    value: function renderTag(tag) {
-	      if (!tag.startsWith(this.state.filter)) {
-	        return null;
-	      }
-
-	      return _react2.default.createElement(
-	        'li',
-	        { key: tag, className: this.isActive(tag) ? 'active' : '' },
-	        _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : '') },
-	          '#',
-	          tag
-	        ),
-	        this.renderPlusButton(tag)
-	      );
-	    }
-	  }, {
-	    key: 'contains',
-	    value: function contains(t, tag) {
-	      for (var index = 0; index < t.length; index++) {
-	        if (t[index] === tag) {
-	          return true;
-	        }
-	      }
-
-	      return false;
-	    }
-	  }, {
-	    key: 'isActive',
-	    value: function isActive(tag) {
-	      if (!this.props.tags) {
-	        return false;
-	      }
-
-	      var t = this.props.tags.split(',');
-
-	      return this.contains(t, tag);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this7 = this;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'tags panel' },
-	        _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' }),
-	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: getLocation() + (this.props.category ? '?category=' + this.props.category : ''), className: !this.props.tags ? 'active' : '' },
-	              'All'
-	            )
-	          ),
-	          _react2.default.createElement('li', { className: 'divider' }),
-	          this.state.tags.map(function (tag) {
-	            return _this7.renderTag(tag);
-	          })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Tags;
-	}(_react2.default.Component);
-
-	var Notes = function (_React$Component4) {
-	  _inherits(Notes, _React$Component4);
-
-	  function Notes(props) {
-	    _classCallCheck(this, Notes);
-
-	    var _this8 = _possibleConstructorReturn(this, (Notes.__proto__ || Object.getPrototypeOf(Notes)).call(this, props));
-
-	    _this8.state = {
-	      notes: []
-	    };
-	    return _this8;
-	  }
-
-	  _createClass(Notes, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.componentWillReceiveProps(this.props);
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var _this9 = this;
-
-	      var category = nextProps.category ? nextProps.category : '';
-	      var url = '/api/notes' + category + (nextProps.tags ? '?tags=' + nextProps.tags : '');
-	      fetch(url).then(function (result) {
-	        return result.json();
-	      }).then(function (notes) {
-	        return _this9.setState({ notes: notes });
-	      });
-	    }
-	  }, {
-	    key: 'getUrl',
-	    value: function getUrl(note) {
-	      return note.file + (this.props.tags ? '?tags=' + this.props.tags : '') + (this.props.category ? (this.props.tags ? '&' : '?') + 'category=' + this.props.category : '');
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this10 = this;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'notes panel' },
-	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          this.state.notes.map(function (note) {
-	            return _react2.default.createElement(
-	              'li',
-	              { key: note.file },
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: _this10.getUrl(note), className: _this10.props.file === note.file ? 'active' : '' },
-	                _react2.default.createElement(
-	                  'div',
-	                  { className: 'title' },
-	                  note.title ? note.title : note.basename
-	                ),
-	                _react2.default.createElement(
-	                  'span',
-	                  { className: 'date' },
-	                  (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
-	                )
-	              )
-	            );
-	          })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Notes;
-	}(_react2.default.Component);
-
-	var Note = function (_React$Component5) {
-	  _inherits(Note, _React$Component5);
-
-	  function Note(props) {
-	    _classCallCheck(this, Note);
-
-	    var _this11 = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
-
-	    _this11.state = {
-	      note: null
-	    };
-	    return _this11;
-	  }
-
-	  _createClass(Note, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.componentWillReceiveProps(this.props);
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var _this12 = this;
-
-	      if (!nextProps.file) {
-	        return;
-	      }
-
-	      fetch('/api/note' + nextProps.file).then(function (result) {
-	        return result.json();
-	      }).then(function (note) {
-	        return _this12.setState({ note: note });
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      if (!this.state.note) {
-	        return _react2.default.createElement('span', null);
-	      }
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'note' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'content' },
-	          _react2.default.createElement(_reactMarkdown2.default, { source: this.state.note.content })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Note;
-	}(_react2.default.Component);
 
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRouter.Router,
 	  { history: _reactRouter.browserHistory },
-	  _react2.default.createElement(_reactRouter.Route, { path: '/*', component: Welcome })
+	  _react2.default.createElement(_reactRouter.Route, { path: '/*', component: _Home2.default })
 	), document.getElementById('app'));
 
 /***/ },
@@ -15715,6 +15238,609 @@
 
 	})));
 
+
+/***/ },
+/* 119 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(4);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Categories = function (_React$Component) {
+	  _inherits(Categories, _React$Component);
+
+	  function Categories(props) {
+	    _classCallCheck(this, Categories);
+
+	    var _this = _possibleConstructorReturn(this, (Categories.__proto__ || Object.getPrototypeOf(Categories)).call(this, props));
+
+	    _this.state = {
+	      categories: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Categories, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      fetch('/api/categories').then(function (result) {
+	        return result.json();
+	      }).then(function (categories) {
+	        return _this2.setState({
+	          categories: categories
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'toggleCategory',
+	    value: function toggleCategory(e, category) {
+	      e.preventDefault();
+	      category.open = !category.open;
+	      this.forceUpdate();
+	    }
+	  }, {
+	    key: 'renderCategories',
+	    value: function renderCategories(categories, deep) {
+	      var _this3 = this;
+
+	      var result = [];
+
+	      var style = {
+	        paddingLeft: 10 + deep * 10 + 'px'
+	      };
+
+	      categories.forEach(function (category) {
+	        if (category.categories.length === 0) {
+	          result.push(_react2.default.createElement(
+	            'li',
+	            { key: category.name },
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { style: style, to: window.location.pathname + '?category=' + category.dir, className: _this3.props.category === category.dir ? 'active' : '' },
+	              category.name
+	            )
+	          ));
+	        } else {
+	          var sub = null;
+	          if (category.open) {
+	            sub = _react2.default.createElement(
+	              'ul',
+	              null,
+	              _this3.renderCategories(category.categories, deep + 1)
+	            );
+	          }
+
+	          result.push(_react2.default.createElement(
+	            'li',
+	            { key: category.name },
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { style: style, to: window.location.pathname + '?category=' + category.dir, className: _this3.props.category === category.dir ? 'active' : '' },
+	              category.title,
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'badge', onClick: function onClick(e) {
+	                    return _this3.toggleCategory(e, category);
+	                  } },
+	                _react2.default.createElement('i', { className: 'fa fa-chevron-' + (category.open ? 'down' : 'up') })
+	              )
+	            ),
+	            sub
+	          ));
+	        }
+	      });
+
+	      return result;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'categories panel' },
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: window.location.pathname, className: !this.props.category ? 'active' : '' },
+	              'All'
+	            )
+	          ),
+	          _react2.default.createElement('li', { className: 'divider' }),
+	          this.renderCategories(this.state.categories, 0)
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Categories;
+	}(_react2.default.Component);
+
+	module.exports = Categories;
+
+/***/ },
+/* 120 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(4);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Tags = function (_React$Component) {
+	  _inherits(Tags, _React$Component);
+
+	  function Tags(props) {
+	    _classCallCheck(this, Tags);
+
+	    var _this = _possibleConstructorReturn(this, (Tags.__proto__ || Object.getPrototypeOf(Tags)).call(this, props));
+
+	    _this.state = {
+	      tags: [],
+	      filter: '',
+	      addTags: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Tags, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.componentWillReceiveProps(this.props);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      var category = nextProps.category ? nextProps.category : '';
+	      fetch('/api/tags/' + category).then(function (result) {
+	        return result.json();
+	      }).then(function (tags) {
+	        return _this2.setState({ tags: tags });
+	      });
+
+	      if (nextProps.tags) {
+	        fetch('/api/tags/' + category + '?tags=' + nextProps.tags).then(function (result) {
+	          return result.json();
+	        }).then(function (tags) {
+	          return _this2.setState({ addTags: tags });
+	        });
+	      } else {
+	        this.setState({ addTags: [] });
+	      }
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      this.setState({
+	        filter: e.target.value
+	      });
+	    }
+	  }, {
+	    key: 'renderPlusButton',
+	    value: function renderPlusButton(tag) {
+	      if (!this.props.tags) {
+	        return null;
+	      }
+
+	      if (this.isActive(tag)) {
+	        var s = this.props.tags.split(',');
+
+	        for (var index = 0; index < s.length; index++) {
+	          if (s[index] === tag) {
+	            s.splice(index, 1);
+	            break;
+	          }
+	        }
+
+	        var url = null;
+
+	        if (s.length === 0) {
+	          url = window.location.pathname + (this.props.category ? '?category=' + this.props.category : '');
+	        } else {
+	          url = window.location.pathname + '?tags=' + s.join(',') + (this.props.category ? '&category=' + this.props.category : '');
+	        }
+
+	        return _react2.default.createElement(
+	          _reactRouter.Link,
+	          { className: 'badge', to: url },
+	          _react2.default.createElement('i', { className: 'fa fa-minus-square' })
+	        );
+	      }
+
+	      if (!this.contains(this.state.addTags, tag)) {
+	        return null;
+	      }
+
+	      return _react2.default.createElement(
+	        _reactRouter.Link,
+	        { className: 'badge', to: window.location.pathname + '?tags=' + this.props.tags + ',' + tag + (this.props.category ? '&category=' + this.props.category : '') },
+	        _react2.default.createElement('i', { className: 'fa fa-plus-square' })
+	      );
+	    }
+	  }, {
+	    key: 'renderTag',
+	    value: function renderTag(tag) {
+	      if (!tag.startsWith(this.state.filter)) {
+	        return null;
+	      }
+
+	      return _react2.default.createElement(
+	        'li',
+	        { key: tag, className: this.isActive(tag) ? 'active' : '' },
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: window.location.pathname + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : '') },
+	          '#',
+	          tag
+	        ),
+	        this.renderPlusButton(tag)
+	      );
+	    }
+	  }, {
+	    key: 'contains',
+	    value: function contains(t, tag) {
+	      for (var index = 0; index < t.length; index++) {
+	        if (t[index] === tag) {
+	          return true;
+	        }
+	      }
+
+	      return false;
+	    }
+	  }, {
+	    key: 'isActive',
+	    value: function isActive(tag) {
+	      if (!this.props.tags) {
+	        return false;
+	      }
+
+	      var t = this.props.tags.split(',');
+
+	      return this.contains(t, tag);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this3 = this;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'tags panel' },
+	        _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' }),
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: window.location.pathname + (this.props.category ? '?category=' + this.props.category : ''), className: !this.props.tags ? 'active' : '' },
+	              'All'
+	            )
+	          ),
+	          _react2.default.createElement('li', { className: 'divider' }),
+	          this.state.tags.map(function (tag) {
+	            return _this3.renderTag(tag);
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Tags;
+	}(_react2.default.Component);
+
+	module.exports = Tags;
+
+/***/ },
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(4);
+
+	var _moment = __webpack_require__(8);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Notes = function (_React$Component) {
+	  _inherits(Notes, _React$Component);
+
+	  function Notes(props) {
+	    _classCallCheck(this, Notes);
+
+	    var _this = _possibleConstructorReturn(this, (Notes.__proto__ || Object.getPrototypeOf(Notes)).call(this, props));
+
+	    _this.state = {
+	      notes: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Notes, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.componentWillReceiveProps(this.props);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      var category = nextProps.category ? nextProps.category : '';
+	      var url = '/api/notes' + category + (nextProps.tags ? '?tags=' + nextProps.tags : '');
+	      fetch(url).then(function (result) {
+	        return result.json();
+	      }).then(function (notes) {
+	        return _this2.setState({ notes: notes });
+	      });
+	    }
+	  }, {
+	    key: 'getUrl',
+	    value: function getUrl(note) {
+	      return note.file + (this.props.tags ? '?tags=' + this.props.tags : '') + (this.props.category ? (this.props.tags ? '&' : '?') + 'category=' + this.props.category : '');
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this3 = this;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'notes panel' },
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          this.state.notes.map(function (note) {
+	            return _react2.default.createElement(
+	              'li',
+	              { key: note.file },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: _this3.getUrl(note), className: _this3.props.file === note.file ? 'active' : '' },
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'title' },
+	                  note.title ? note.title : note.basename
+	                ),
+	                _react2.default.createElement(
+	                  'span',
+	                  { className: 'date' },
+	                  (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
+	                )
+	              )
+	            );
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Notes;
+	}(_react2.default.Component);
+
+	module.exports = Notes;
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(4);
+
+	var _reactMarkdown = __webpack_require__(7);
+
+	var _reactMarkdown2 = _interopRequireDefault(_reactMarkdown);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Note = function (_React$Component) {
+	  _inherits(Note, _React$Component);
+
+	  function Note(props) {
+	    _classCallCheck(this, Note);
+
+	    var _this = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
+
+	    _this.state = {
+	      note: null
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Note, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.componentWillReceiveProps(this.props);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      if (!nextProps.file) {
+	        return;
+	      }
+
+	      fetch('/api/note' + nextProps.file).then(function (result) {
+	        return result.json();
+	      }).then(function (note) {
+	        return _this2.setState({ note: note });
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.state.note) {
+	        return _react2.default.createElement('span', null);
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'note' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'content' },
+	          _react2.default.createElement(_reactMarkdown2.default, { source: this.state.note.content })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Note;
+	}(_react2.default.Component);
+
+	module.exports = Note;
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Categories = __webpack_require__(119);
+
+	var _Categories2 = _interopRequireDefault(_Categories);
+
+	var _Tags = __webpack_require__(120);
+
+	var _Tags2 = _interopRequireDefault(_Tags);
+
+	var _Notes = __webpack_require__(121);
+
+	var _Notes2 = _interopRequireDefault(_Notes);
+
+	var _Note = __webpack_require__(122);
+
+	var _Note2 = _interopRequireDefault(_Note);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Home = function (_React$Component) {
+	  _inherits(Home, _React$Component);
+
+	  function Home(props) {
+	    _classCallCheck(this, Home);
+
+	    var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
+
+	    _this.state = {
+	      category: '/',
+	      file: null,
+	      tags: null
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Home, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.componentWillReceiveProps(this.props);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.setState({
+	        category: nextProps.location.query.category,
+	        tags: nextProps.location.query.tags,
+	        file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'container' },
+	        _react2.default.createElement(_Categories2.default, { category: this.state.category, file: this.state.file }),
+	        _react2.default.createElement(_Tags2.default, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
+	        _react2.default.createElement(_Notes2.default, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
+	        _react2.default.createElement(_Note2.default, { file: this.state.file })
+	      );
+	    }
+	  }]);
+
+	  return Home;
+	}(_react2.default.Component);
+
+	module.exports = Home;
 
 /***/ }
 /******/ ]);
