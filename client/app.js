@@ -132,9 +132,7 @@ class Tags extends React.Component {
     fetch('/api/tags/' + category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
 
     if (nextProps.tags) {
-      var url = '/api/tags/' + category + '?tags=' + nextProps.tags;
-      console.log(url);
-      fetch(url).then((result) => result.json()).then((tags) => this.setState({addTags:tags}));
+      fetch('/api/tags/' + category + '?tags=' + nextProps.tags).then((result) => result.json()).then((tags) => this.setState({addTags:tags}));
     } else {
       this.setState({addTags:[]});
     }

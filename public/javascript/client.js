@@ -279,9 +279,7 @@
 	      });
 
 	      if (nextProps.tags) {
-	        var url = '/api/tags/' + category + '?tags=' + nextProps.tags;
-	        console.log(url);
-	        fetch(url).then(function (result) {
+	        fetch('/api/tags/' + category + '?tags=' + nextProps.tags).then(function (result) {
 	          return result.json();
 	        }).then(function (tags) {
 	          return _this6.setState({ addTags: tags });
