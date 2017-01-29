@@ -19,7 +19,7 @@ class Welcome extends React.Component {
     this.state = {
       category: '/',
       file: null,
-      tag: null
+      tags: null
     }
   }
 
@@ -30,7 +30,7 @@ class Welcome extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       category: nextProps.location.query.category,
-      tag: nextProps.location.query.tag,
+      tags: nextProps.location.query.tags,
       file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
     });
   }
@@ -39,8 +39,8 @@ class Welcome extends React.Component {
     return (
       <div className="container">
         <Categories category={this.state.category} file={this.state.file} />
-        <Tags category={this.state.category} tag={this.state.tag} file={this.state.file} />
-        <Notes category={this.state.category} tag={this.state.tag} file={this.state.file} />
+        <Tags category={this.state.category} tags={this.state.tags} file={this.state.file} />
+        <Notes category={this.state.category} tags={this.state.tags} file={this.state.file} />
         <Note file={this.state.file} />
       </div>
     );
@@ -142,14 +142,14 @@ class Tags extends React.Component {
       return null;
     }
 
-    return (<li key={tag}><Link to={getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : '')} className={(this.props.tag === tag ? 'active' : '')}>#{tag}</Link></li>);
+    return (<li key={tag}><Link to={getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : '')} className={(this.props.tags === tag ? 'active' : '')}>#{tag}</Link></li>);
   }
 
   render() {
     return (<div className="tags panel">
       <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
       <ul>
-        <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')} className={(!this.props.tag ? 'active' : '')}>All</Link></li>
+        <li><Link to={getLocation() + (this.props.category ? '?category=' + this.props.category : '')} className={(!this.props.tags ? 'active' : '')}>All</Link></li>
           <li className="divider" />
           {this.state.tags.map((tag) => this.renderTag(tag))}
       </ul>
@@ -172,16 +172,15 @@ class Notes extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     var category = nextProps.category ? nextProps.category : '';
-    fetch('/api/notes/' + category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
+    var url = '/api/notes' + category + (nextProps.tags ? '?tag=' + nextProps.tags : '');
+    fetch(url).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
   }
 
   getUrl(note) {
-    return note.file + (this.props.tag ? '?tag=' + this.props.tag : '') + (this.props.category ? (this.props.tag ? '&' : '?') + 'category=' + this.props.category : '');
+    return note.file + (this.props.tags ? '?tags=' + this.props.tags : '') + (this.props.category ? (this.props.tags ? '&' : '?') + 'category=' + this.props.category : '');
   }
 
   render() {
-    var url = this.prop
-
     return (<div className="notes panel"><ul>
       {this.state.notes.map((note) => (<li key={note.file}>
         <Link to={this.getUrl(note)} className={(this.props.file === note.file ? 'active' : '')}>

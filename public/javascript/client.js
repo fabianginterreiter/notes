@@ -93,7 +93,7 @@
 	    _this.state = {
 	      category: '/',
 	      file: null,
-	      tag: null
+	      tags: null
 	    };
 	    return _this;
 	  }
@@ -108,7 +108,7 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      this.setState({
 	        category: nextProps.location.query.category,
-	        tag: nextProps.location.query.tag,
+	        tags: nextProps.location.query.tags,
 	        file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
 	      });
 	    }
@@ -119,8 +119,8 @@
 	        'div',
 	        { className: 'container' },
 	        _react2.default.createElement(Categories, { category: this.state.category, file: this.state.file }),
-	        _react2.default.createElement(Tags, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
-	        _react2.default.createElement(Notes, { category: this.state.category, tag: this.state.tag, file: this.state.file }),
+	        _react2.default.createElement(Tags, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
+	        _react2.default.createElement(Notes, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
 	        _react2.default.createElement(Note, { file: this.state.file })
 	      );
 	    }
@@ -296,7 +296,7 @@
 	        { key: tag },
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: getLocation() + '?tag=' + tag + (this.props.category ? '&category=' + this.props.category : ''), className: this.props.tag === tag ? 'active' : '' },
+	          { to: getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : ''), className: this.props.tags === tag ? 'active' : '' },
 	          '#',
 	          tag
 	        )
@@ -319,7 +319,7 @@
 	            null,
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { to: getLocation() + (this.props.category ? '?category=' + this.props.category : ''), className: !this.props.tag ? 'active' : '' },
+	              { to: getLocation() + (this.props.category ? '?category=' + this.props.category : ''), className: !this.props.tags ? 'active' : '' },
 	              'All'
 	            )
 	          ),
@@ -360,7 +360,8 @@
 	      var _this9 = this;
 
 	      var category = nextProps.category ? nextProps.category : '';
-	      fetch('/api/notes/' + category + (nextProps.tag ? '?tag=' + nextProps.tag : '')).then(function (result) {
+	      var url = '/api/notes' + category + (nextProps.tags ? '?tag=' + nextProps.tags : '');
+	      fetch(url).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
 	        return _this9.setState({ notes: notes });
@@ -369,14 +370,12 @@
 	  }, {
 	    key: 'getUrl',
 	    value: function getUrl(note) {
-	      return note.file + (this.props.tag ? '?tag=' + this.props.tag : '') + (this.props.category ? (this.props.tag ? '&' : '?') + 'category=' + this.props.category : '');
+	      return note.file + (this.props.tags ? '?tags=' + this.props.tags : '') + (this.props.category ? (this.props.tags ? '&' : '?') + 'category=' + this.props.category : '');
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this10 = this;
-
-	      var url = this.prop;
 
 	      return _react2.default.createElement(
 	        'div',
