@@ -201,13 +201,13 @@
 	            _react2.default.createElement(
 	              _reactRouter.Link,
 	              { style: style, to: getLocation() + '?category=' + category.dir, className: _this4.props.category === category.dir ? 'active' : '' },
-	              category.name,
+	              category.title,
 	              _react2.default.createElement(
 	                'span',
 	                { className: 'badge', onClick: function onClick(e) {
 	                    return _this4.toggleCategory(e, category);
 	                  } },
-	                _react2.default.createElement('i', { className: 'fa fa-chevron-up' })
+	                _react2.default.createElement('i', { className: 'fa fa-chevron-' + (category.open ? 'down' : 'up') })
 	              )
 	            ),
 	            sub

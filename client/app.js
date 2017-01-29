@@ -89,8 +89,10 @@ class Categories extends React.Component {
         result.push(
           <li key={category.name} >
             <Link style={style} to={getLocation() + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>
-            {category.name}
-            <span className="badge" onClick={(e) => this.toggleCategory(e, category)}><i className="fa fa-chevron-up" /></span>
+            {category.title}
+            <span className="badge" onClick={(e) => this.toggleCategory(e, category)}>
+              <i className={'fa fa-chevron-' + (category.open ? 'down' : 'up')} />
+            </span>
           </Link>
             {sub}
           </li>)  
