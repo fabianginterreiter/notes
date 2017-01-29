@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -207,7 +207,7 @@
 	                { className: 'badge', onClick: function onClick(e) {
 	                    return _this4.toggleCategory(e, category);
 	                  } },
-	                'Open'
+	                _react2.default.createElement('i', { className: 'fa fa-chevron-up' })
 	              )
 	            ),
 	            sub

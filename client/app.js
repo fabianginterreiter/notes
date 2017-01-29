@@ -1,11 +1,11 @@
-"use strict"
+'use strict';
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Router, Route, browserHistory, Redirect, IndexRoute, IndexRedirect, Link } from 'react-router'
-import path from 'path'
-import ReactMarkdown from 'react-markdown'
-import moment from 'moment'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router, Route, browserHistory, Redirect, IndexRoute, IndexRedirect, Link } from 'react-router';
+import path from 'path';
+import ReactMarkdown from 'react-markdown';
+import moment from 'moment';
 
 function getLocation() {
   return window.location.pathname;
@@ -90,7 +90,7 @@ class Categories extends React.Component {
           <li key={category.name} >
             <Link style={style} to={getLocation() + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>
             {category.name}
-            <span className="badge" onClick={(e) => this.toggleCategory(e, category)}>Open</span>
+            <span className="badge" onClick={(e) => this.toggleCategory(e, category)}><i className="fa fa-chevron-up" /></span>
           </Link>
             {sub}
           </li>)  
