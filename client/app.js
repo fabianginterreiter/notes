@@ -118,7 +118,8 @@ class Tags extends React.Component {
     super(props);
     this.state = {
       tags: [],
-      filter: ''
+      filter: '',
+      addTags: []
     }
   }
 
@@ -129,6 +130,14 @@ class Tags extends React.Component {
   componentWillReceiveProps(nextProps) {
     var category = nextProps.category ? nextProps.category : '';
     fetch('/api/tags/' + category).then((result) => result.json()).then((tags) => this.setState({tags:tags}));
+
+    if (nextProps.tags) {
+      var url = '/api/tags/' + category + '?tags=' + nextProps.tags;
+      console.log(url);
+      fetch(url).then((result) => result.json()).then((tags) => this.setState({addTags:tags}));
+    } else {
+      this.setState({addTags:[]});
+    }
   }
 
   handleChange(e) {
@@ -137,12 +146,70 @@ class Tags extends React.Component {
     });
   }
 
+  renderPlusButton(tag) {
+    if (!this.props.tags) {
+      return null;
+    }
+
+    if (this.isActive(tag)) {
+      var s = this.props.tags.split(',');
+
+      for (var index = 0; index < s.length; index++) {
+        if (s[index] === tag) {
+          s.splice(index, 1);
+          break;
+        }
+      }
+
+      var url = null;
+
+      if (s.length === 0) {
+        url = getLocation() + (this.props.category ? '?category=' + this.props.category : '');
+      } else {
+        url = getLocation() + '?tags=' + s.join(',') + (this.props.category ? '&category=' + this.props.category : '');
+      }
+
+      return (<Link className="badge" to={url}><i className="fa fa-minus-square" /></Link>);
+    }
+
+    if (!this.contains(this.state.addTags, tag)) {
+      return null;
+    }
+
+    return (<Link className="badge" to={getLocation() + '?tags=' + this.props.tags + ',' + tag + (this.props.category ? '&category=' + this.props.category : '')}><i className="fa fa-plus-square" /></Link>);
+  }
+
   renderTag(tag) {
     if (!tag.startsWith(this.state.filter)) {
       return null;
     }
 
-    return (<li key={tag}><Link to={getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : '')} className={(this.props.tags === tag ? 'active' : '')}>#{tag}</Link></li>);
+    return (<li key={tag} className={(this.isActive(tag) ? 'active' : '')}>
+      <Link to={getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : '')}>
+      #{tag}
+      </Link>
+      {this.renderPlusButton(tag)}
+      </li>);
+  }
+
+  contains(t, tag) {
+    for (var index = 0; index < t.length; index++) {
+      if (t[index] === tag) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  isActive(tag) {
+    if (!this.props.tags) {
+      return false;
+    }
+
+    var t = this.props.tags.split(',');
+    
+    return this.contains(t, tag);
   }
 
   render() {
@@ -172,7 +239,7 @@ class Notes extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     var category = nextProps.category ? nextProps.category : '';
-    var url = '/api/notes' + category + (nextProps.tags ? '?tag=' + nextProps.tags : '');
+    var url = '/api/notes' + category + (nextProps.tags ? '?tags=' + nextProps.tags : '');
     fetch(url).then((result) => result.json()).then((notes) => this.setState({notes:notes}));
   }
 

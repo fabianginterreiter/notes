@@ -37,16 +37,17 @@ body {
     display: block;
     padding: 3px 10px;
     position: relative; }
-    .categories a .badge {
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0; }
   .categories a.active {
     background-color: #1e1e1e; }
   .categories li.divider {
     height: 1px;
     margin: 5px 0; }
+
+.badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0; }
 
 .panel {
   border-right: 1px solid #565656; }
@@ -58,13 +59,14 @@ body {
     margin: 0;
     padding: 0; }
   .tags li {
-    list-style: none; }
+    list-style: none;
+    position: relative; }
   .tags a {
     display: block;
     padding: 5px 10px;
     text-decoration: none;
     color: #333; }
-  .tags a.active {
+  .tags .active {
     background-color: #7aadff; }
   .tags li.divider {
     height: 1px;

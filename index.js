@@ -19,7 +19,7 @@ app.get('/api/all', function (req, res) {
 });
 
 app.get('/api/tags*', (req, res) => {
-  res.send(notes.getTags(req.params[0]));
+  res.send(notes.getTags(req.params[0], req.query.tags));
 });
 
 app.get('/api/categories*', (req, res) => {
@@ -27,7 +27,7 @@ app.get('/api/categories*', (req, res) => {
 });
 
 app.get('/api/notes*', (req, res) => {
-  res.send(notes.getNotes(req.params[0], req.query.tag));
+  res.send(notes.getNotes(req.params[0], req.query.tags));
 });
 
 app.get('/api/note/*', (req, res) => {

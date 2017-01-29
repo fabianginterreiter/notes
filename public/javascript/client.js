@@ -255,7 +255,8 @@
 
 	    _this5.state = {
 	      tags: [],
-	      filter: ''
+	      filter: '',
+	      addTags: []
 	    };
 	    return _this5;
 	  }
@@ -276,6 +277,18 @@
 	      }).then(function (tags) {
 	        return _this6.setState({ tags: tags });
 	      });
+
+	      if (nextProps.tags) {
+	        var url = '/api/tags/' + category + '?tags=' + nextProps.tags;
+	        console.log(url);
+	        fetch(url).then(function (result) {
+	          return result.json();
+	        }).then(function (tags) {
+	          return _this6.setState({ addTags: tags });
+	        });
+	      } else {
+	        this.setState({ addTags: [] });
+	      }
 	    }
 	  }, {
 	    key: 'handleChange',
@@ -283,6 +296,48 @@
 	      this.setState({
 	        filter: e.target.value
 	      });
+	    }
+	  }, {
+	    key: 'renderPlusButton',
+	    value: function renderPlusButton(tag) {
+	      if (!this.props.tags) {
+	        return null;
+	      }
+
+	      if (this.isActive(tag)) {
+	        var s = this.props.tags.split(',');
+
+	        for (var index = 0; index < s.length; index++) {
+	          if (s[index] === tag) {
+	            s.splice(index, 1);
+	            break;
+	          }
+	        }
+
+	        var url = null;
+
+	        if (s.length === 0) {
+	          url = getLocation() + (this.props.category ? '?category=' + this.props.category : '');
+	        } else {
+	          url = getLocation() + '?tags=' + s.join(',') + (this.props.category ? '&category=' + this.props.category : '');
+	        }
+
+	        return _react2.default.createElement(
+	          _reactRouter.Link,
+	          { className: 'badge', to: url },
+	          _react2.default.createElement('i', { className: 'fa fa-minus-square' })
+	        );
+	      }
+
+	      if (!this.contains(this.state.addTags, tag)) {
+	        return null;
+	      }
+
+	      return _react2.default.createElement(
+	        _reactRouter.Link,
+	        { className: 'badge', to: getLocation() + '?tags=' + this.props.tags + ',' + tag + (this.props.category ? '&category=' + this.props.category : '') },
+	        _react2.default.createElement('i', { className: 'fa fa-plus-square' })
+	      );
 	    }
 	  }, {
 	    key: 'renderTag',
@@ -293,14 +348,37 @@
 
 	      return _react2.default.createElement(
 	        'li',
-	        { key: tag },
+	        { key: tag, className: this.isActive(tag) ? 'active' : '' },
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : ''), className: this.props.tags === tag ? 'active' : '' },
+	          { to: getLocation() + '?tags=' + tag + (this.props.category ? '&category=' + this.props.category : '') },
 	          '#',
 	          tag
-	        )
+	        ),
+	        this.renderPlusButton(tag)
 	      );
+	    }
+	  }, {
+	    key: 'contains',
+	    value: function contains(t, tag) {
+	      for (var index = 0; index < t.length; index++) {
+	        if (t[index] === tag) {
+	          return true;
+	        }
+	      }
+
+	      return false;
+	    }
+	  }, {
+	    key: 'isActive',
+	    value: function isActive(tag) {
+	      if (!this.props.tags) {
+	        return false;
+	      }
+
+	      var t = this.props.tags.split(',');
+
+	      return this.contains(t, tag);
 	    }
 	  }, {
 	    key: 'render',
@@ -360,7 +438,7 @@
 	      var _this9 = this;
 
 	      var category = nextProps.category ? nextProps.category : '';
-	      var url = '/api/notes' + category + (nextProps.tags ? '?tag=' + nextProps.tags : '');
+	      var url = '/api/notes' + category + (nextProps.tags ? '?tags=' + nextProps.tags : '');
 	      fetch(url).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
