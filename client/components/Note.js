@@ -9,20 +9,24 @@ class Note extends React.Component {
 
     this.state = {
       note: null,
-      style: {}
+      style: this.createStyle(PanelsStore.getObject())
     }
   }
 
   componentDidMount() {
     this.componentWillReceiveProps(this.props);
 
-    PanelsStore.addChangeListener(this, (e) => {
+    PanelsStore.addChangeListener(this, (e) => 
       this.setState({
-        style: {
-          left: (e.categories ? 200 : 0) + (e.tags ? 200 : 0) + (e.notes ? 300 : 0) + 'px'
-        }
+        style:this.createStyle(e)
       })
-    });
+    );
+  }
+
+  createStyle(e) {
+   return {
+        left: (e.categories ? 200 : 0) + (e.tags ? 200 : 0) + (e.notes ? 300 : 0) + 'px'
+      }
   }
 
   componentWillUnmount() {
@@ -38,27 +42,28 @@ class Note extends React.Component {
   }
 
   render() {
-    if (!this.state.note) {
-      return (<span />);
-    }
-
     var buttons = [];
 
     if (!PanelsStore.getObject().categories) {
-      buttons.push(<span key="categories" onClick={() => PanelsStore.setCategories(true)}><i className="fa fa-folder-o" /></span>);
+      buttons.push(<span key="categories" onClick={() => PanelsStore.setCategories(true)}><i className="fa fa-folder-o" />&nbsp;</span>);
     }
 
     if (!PanelsStore.getObject().tags) {
-      buttons.push(<span key="tags" onClick={() => PanelsStore.setTags(true)}><i className="fa fa-tags" /></span>);
+      buttons.push(<span key="tags" onClick={() => PanelsStore.setTags(true)}><i className="fa fa-tags" />&nbsp;</span>);
     }
 
     if (!PanelsStore.getObject().notes) {
-      buttons.push(<span key="notes" onClick={() => PanelsStore.setNotes(true)}><i className="fa fa-file-text-o" /></span>);
+      buttons.push(<span key="notes" onClick={() => PanelsStore.setNotes(true)}><i className="fa fa-file-text-o" />&nbsp;</span>);
+    }
+
+    var content = null;
+    if (this.state.note) {
+      content = (<div className="content"><ReactMarkdown source={this.state.note.content} /></div>);
     }
 
     return (<div className="note" style={this.state.style}>
         <header>{buttons}&nbsp;</header>
-        <div className="content"><ReactMarkdown source={this.state.note.content} /></div>
+        {content}
       </div>)
   }
 }

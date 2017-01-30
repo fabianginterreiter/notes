@@ -45,8 +45,9 @@ header {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
-  width: 199px; }
+  overflow: hidden; }
+  .categories .list {
+    width: 199px; }
   .categories ul {
     padding: 0;
     margin: 0; }
@@ -87,8 +88,9 @@ header {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 200px;
-  width: 199px; }
+  overflow: hidden; }
+  .tags .list {
+    width: 199px; }
   .tags ul {
     margin: 0;
     padding: 0; }
@@ -110,8 +112,9 @@ header {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 400px;
-  width: 299px; }
+  overflow: hidden; }
+  .notes .list {
+    width: 299px; }
   .notes ul {
     margin: 0;
     padding: 0; }
@@ -136,7 +139,6 @@ header {
   top: 0;
   bottom: 0;
   right: 0;
-  left: 700px;
   transition: 0.3s; }
   .note .content {
     position: absolute;

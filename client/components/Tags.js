@@ -9,21 +9,25 @@ class Tags extends React.Component {
       tags: [],
       filter: '',
       addTags: [],
-      style: {}
+      style: this.createStyle(PanelsStore.getObject())
     }
   }
 
   componentDidMount() {
     this.componentWillReceiveProps(this.props);
 
-    PanelsStore.addChangeListener(this, (e) => {
+    PanelsStore.addChangeListener(this, (e) => 
       this.setState({
-        style: {
-          width: (e.tags ? '199' : '0') + 'px',
-          left: (e.categories ? '200' : '0') + 'px'
-        }
+        style:this.createStyle(e)
       })
-    });
+    );
+  }
+
+  createStyle(e) {
+    return {
+      width: (e.tags ? '199' : '0') + 'px',
+      left: (e.categories ? '200' : '0') + 'px'
+    };
   }
 
   componentWillUnmount() {

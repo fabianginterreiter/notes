@@ -10,21 +10,29 @@ class Notes extends React.Component {
     this.state = {
       notes: [],
       filter: '',
-      style: {}
+      style: this.createStyle(PanelsStore.getObject())
     }
   }
 
   componentDidMount() {
     this.componentWillReceiveProps(this.props);
 
-    PanelsStore.addChangeListener(this, (e) => {
+    this.initialized = false;
+
+    setTimeout(() => this.initialized = true, 300);
+
+    PanelsStore.addChangeListener(this, (e) => 
       this.setState({
-        style: {
-          width: (e.notes ? '299' : '0') + 'px',
-          left: (e.categories ? 200 : 0) + (e.tags ? 200 : 0) + 'px'
-        }
+        style:this.createStyle(e)
       })
-    });
+    );
+  }
+
+  createStyle(e) {
+    return {
+      width: (e.notes ? '299' : '0') + 'px',
+      left: (e.categories ? 200 : 0) + (e.tags ? 200 : 0) + 'px'
+    }
   }
 
   componentWillUnmount() {
@@ -36,7 +44,10 @@ class Notes extends React.Component {
     var url = '/api/notes' + category + (nextProps.tags ? '?tags=' + nextProps.tags : '');
     fetch(url).then((result) => result.json()).then((notes) => {
       this.setState({notes:notes});
-      PanelsStore.setNotes(true);
+
+      if (this.initialized) {
+        PanelsStore.setNotes(true);
+      }
     });
   }
 

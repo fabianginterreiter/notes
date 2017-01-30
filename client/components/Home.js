@@ -11,9 +11,9 @@ class Home extends React.Component {
     super(props);
 
     this.state = {
-      category: '/',
-      file: null,
-      tags: null
+      category: undefined,
+      file: undefined,
+      tags: undefined
     }
   }
 
@@ -22,11 +22,17 @@ class Home extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
+    var next = {
       category: nextProps.location.query.category,
       tags: nextProps.location.query.tags,
-      file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : null
-    });
+      file: nextProps.location.pathname.length > 1 ? nextProps.location.pathname : undefined
+    };
+
+    if (this.state.category === next.category && this.state.tags === next.tags && this.state.file === next.file) {
+      return;
+    }
+
+    this.setState(next);
   }
 
   render() {

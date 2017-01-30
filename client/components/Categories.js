@@ -7,7 +7,7 @@ class Categories extends React.Component {
     super(props);
     this.state = {
       categories: [],
-      style: {}
+      style: this.createStyle(PanelsStore.getObject())
     }
   }
 
@@ -16,13 +16,17 @@ class Categories extends React.Component {
       categories: categories
     }));
 
-    PanelsStore.addChangeListener(this, (e) => {
+    PanelsStore.addChangeListener(this, (e) => 
       this.setState({
-        style: {
-          width: (e.categories ? '199' : '0') + 'px'
-        }
+        style:this.createStyle(e)
       })
-    });
+    );
+  }
+
+  createStyle(e) {
+     return {
+        width: (e.categories ? '199' : '0') + 'px'
+      }
   }
 
   componentWillUnmount() {
