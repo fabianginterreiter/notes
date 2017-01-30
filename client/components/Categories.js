@@ -31,8 +31,8 @@ class Categories extends React.Component {
     categories.forEach((category) => {
       if (category.categories.length === 0) {
         result.push(
-          <li key={category.name} >
-            <Link style={style} to={window.location.pathname + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>{category.name}</Link>
+          <li key={category.name} className={this.props.category === category.dir ? 'active' : ''}>
+            <Link style={style} to={window.location.pathname + '?category=' + category.dir}>{category.name}</Link>
           </li>)
       } else {
         var sub = null;
@@ -43,11 +43,11 @@ class Categories extends React.Component {
         result.push(
           <li key={category.name} >
             <Link style={style} to={window.location.pathname + '?category=' + category.dir} className={this.props.category === category.dir ? 'active' : ''}>
-            {category.title}
+              {category.title}
+            </Link>
             <span className="badge" onClick={(e) => this.toggleCategory(e, category)}>
               <i className={'fa fa-chevron-' + (category.open ? 'down' : 'up')} />
             </span>
-          </Link>
             {sub}
           </li>)  
       }
@@ -58,10 +58,12 @@ class Categories extends React.Component {
 
   render() {
     return (<div className="categories panel">
+        <header>Cat</header>
+        <div className="list">
         <ul>
         <li><Link to={window.location.pathname} className={(!this.props.category ? 'active' : '')}>All</Link></li>
         <li className="divider" />
-        {this.renderCategories(this.state.categories, 0)}</ul></div>);
+        {this.renderCategories(this.state.categories, 0)}</ul></div></div>);
   }
 }
 

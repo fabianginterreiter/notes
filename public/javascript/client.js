@@ -489,10 +489,10 @@
 	        if (category.categories.length === 0) {
 	          result.push(_react2.default.createElement(
 	            'li',
-	            { key: category.name },
+	            { key: category.name, className: _this3.props.category === category.dir ? 'active' : '' },
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { style: style, to: window.location.pathname + '?category=' + category.dir, className: _this3.props.category === category.dir ? 'active' : '' },
+	              { style: style, to: window.location.pathname + '?category=' + category.dir },
 	              category.name
 	            )
 	          ));
@@ -512,14 +512,14 @@
 	            _react2.default.createElement(
 	              _reactRouter.Link,
 	              { style: style, to: window.location.pathname + '?category=' + category.dir, className: _this3.props.category === category.dir ? 'active' : '' },
-	              category.title,
-	              _react2.default.createElement(
-	                'span',
-	                { className: 'badge', onClick: function onClick(e) {
-	                    return _this3.toggleCategory(e, category);
-	                  } },
-	                _react2.default.createElement('i', { className: 'fa fa-chevron-' + (category.open ? 'down' : 'up') })
-	              )
+	              category.title
+	            ),
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'badge', onClick: function onClick(e) {
+	                  return _this3.toggleCategory(e, category);
+	                } },
+	              _react2.default.createElement('i', { className: 'fa fa-chevron-' + (category.open ? 'down' : 'up') })
 	            ),
 	            sub
 	          ));
@@ -535,19 +535,28 @@
 	        'div',
 	        { className: 'categories panel' },
 	        _react2.default.createElement(
-	          'ul',
+	          'header',
 	          null,
+	          'Cat'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'list' },
 	          _react2.default.createElement(
-	            'li',
+	            'ul',
 	            null,
 	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: window.location.pathname, className: !this.props.category ? 'active' : '' },
-	              'All'
-	            )
-	          ),
-	          _react2.default.createElement('li', { className: 'divider' }),
-	          this.renderCategories(this.state.categories, 0)
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: window.location.pathname, className: !this.props.category ? 'active' : '' },
+	                'All'
+	              )
+	            ),
+	            _react2.default.createElement('li', { className: 'divider' }),
+	            this.renderCategories(this.state.categories, 0)
+	          )
 	        )
 	      );
 	    }
@@ -721,23 +730,31 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'tags panel' },
-	        _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' }),
 	        _react2.default.createElement(
-	          'ul',
+	          'header',
 	          null,
+	          _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'list' },
 	          _react2.default.createElement(
-	            'li',
+	            'ul',
 	            null,
 	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: window.location.pathname + (this.props.category ? '?category=' + this.props.category : ''), className: !this.props.tags ? 'active' : '' },
-	              'All'
-	            )
-	          ),
-	          _react2.default.createElement('li', { className: 'divider' }),
-	          this.state.tags.map(function (tag) {
-	            return _this3.renderTag(tag);
-	          })
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: window.location.pathname + (this.props.category ? '?category=' + this.props.category : ''), className: !this.props.tags ? 'active' : '' },
+	                'All'
+	              )
+	            ),
+	            _react2.default.createElement('li', { className: 'divider' }),
+	            this.state.tags.map(function (tag) {
+	              return _this3.renderTag(tag);
+	            })
+	          )
 	        )
 	      );
 	    }
@@ -820,28 +837,37 @@
 	        'div',
 	        { className: 'notes panel' },
 	        _react2.default.createElement(
-	          'ul',
+	          'header',
 	          null,
-	          this.state.notes.map(function (note) {
-	            return _react2.default.createElement(
-	              'li',
-	              { key: note.file },
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: _this3.getUrl(note), className: _this3.props.file === note.file ? 'active' : '' },
+	          'Notes'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'list' },
+	          _react2.default.createElement(
+	            'ul',
+	            null,
+	            this.state.notes.map(function (note) {
+	              return _react2.default.createElement(
+	                'li',
+	                { key: note.file },
 	                _react2.default.createElement(
-	                  'div',
-	                  { className: 'title' },
-	                  note.title ? note.title : note.basename
-	                ),
-	                _react2.default.createElement(
-	                  'span',
-	                  { className: 'date' },
-	                  (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
+	                  _reactRouter.Link,
+	                  { to: _this3.getUrl(note), className: _this3.props.file === note.file ? 'active' : '' },
+	                  _react2.default.createElement(
+	                    'div',
+	                    { className: 'title' },
+	                    note.title ? note.title : note.basename
+	                  ),
+	                  _react2.default.createElement(
+	                    'span',
+	                    { className: 'date' },
+	                    (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
+	                  )
 	                )
-	              )
-	            );
-	          })
+	              );
+	            })
+	          )
 	        )
 	      );
 	    }
@@ -15822,6 +15848,11 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'note' },
+	        _react2.default.createElement(
+	          'header',
+	          null,
+	          'Note'
+	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'content' },

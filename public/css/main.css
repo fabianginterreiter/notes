@@ -23,38 +23,66 @@ body {
   .container > div {
     flex-grow: 0; }
 
+header {
+  background-color: #222;
+  margin-bottom: 10px;
+  box-shadow: 0px 7px 25px -1px rgba(0, 0, 0, 0.75);
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  z-index: 200;
+  position: relative; }
+
+.list {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto; }
+
 .categories {
   width: 300px;
-  background-color: #383838; }
+  background-color: #383838;
+  position: relative; }
   .categories ul {
     padding: 0;
     margin: 0; }
   .categories li {
-    list-style: none; }
+    list-style: none;
+    position: relative; }
   .categories a {
     color: #f7f7f7;
     text-decoration: none;
     display: block;
-    padding: 3px 10px;
-    position: relative; }
-  .categories a.active {
+    padding: 5px 10px; }
+  .categories a:hover {
+    color: #cccccc; }
+  .categories .active {
     background-color: #1e1e1e; }
   .categories li.divider {
     height: 1px;
     margin: 5px 0; }
+  .categories .badge:hover {
+    color: #cccccc; }
 
 .badge {
   position: absolute;
   right: 0;
   top: 0;
-  bottom: 0; }
+  bottom: 0;
+  padding: 4px 7px;
+  color: white;
+  cursor: pointer; }
 
 .panel {
-  border-right: 1px solid #565656; }
+  border-right: 1px solid #565656;
+  width: 300px; }
 
 .tags {
   width: 300px;
-  background-color: #e5e5e5; }
+  background-color: #e5e5e5;
+  position: relative; }
   .tags ul {
     margin: 0;
     padding: 0; }
@@ -73,7 +101,8 @@ body {
     margin: 5px 0; }
 
 .notes {
-  width: 300px; }
+  width: 300px;
+  position: relative; }
   .notes ul {
     margin: 0;
     padding: 0; }
@@ -98,7 +127,7 @@ body {
   position: relative; }
   .note .content {
     position: absolute;
-    top: 0;
+    top: 50px;
     left: 0;
     right: 0;
     bottom: 0;

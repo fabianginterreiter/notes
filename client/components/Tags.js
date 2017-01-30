@@ -100,12 +100,14 @@ class Tags extends React.Component {
 
   render() {
     return (<div className="tags panel">
-      <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
+      <header><input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" /></header>
+      <div className="list">
       <ul>
         <li><Link to={window.location.pathname + (this.props.category ? '?category=' + this.props.category : '')} className={(!this.props.tags ? 'active' : '')}>All</Link></li>
           <li className="divider" />
           {this.state.tags.map((tag) => this.renderTag(tag))}
       </ul>
+      </div>
     </div>)
   }
 }

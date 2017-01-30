@@ -29,6 +29,7 @@ class Note extends React.Component {
     }
 
     return (<div className="note">
+        <header>Note</header>
         <div className="content"><ReactMarkdown source={this.state.note.content} /></div>
       </div>)
   }
