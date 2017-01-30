@@ -9,6 +9,7 @@ class Notes extends React.Component {
 
     this.state = {
       notes: [],
+      filter: '',
       style: {}
     }
   }
@@ -47,16 +48,34 @@ class Notes extends React.Component {
     PanelsStore.setNotes(false);
   }
 
-  render() {
-    return (<div className="notes panel" style={this.state.style}>
-      <header>Notes<span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span></header>
-      <div className="list">
-      <ul>
-      {this.state.notes.map((note) => (<li key={note.file}>
+  handleChange(e) {
+    this.setState({
+      filter: e.target.value
+    });
+  }
+
+  renderNote(note) {
+    if (!note.title.toLowerCase().includes(this.state.filter.toLowerCase())) {
+      return;
+    }
+
+    return (<li key={note.file}>
         <Link to={this.getUrl(note)} className={(this.props.file === note.file ? 'active' : '')}>
         <div className="title">{(note.title ? note.title : note.basename)}</div>
         <span className="date">{moment(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')}</span>
-        </Link></li>))}
+        </Link></li>);
+  }
+
+  render() {
+    return (<div className="notes panel" style={this.state.style}>
+      <header><i className="fa fa-file-text-o" />
+      <div className="searchbar">
+        <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
+      </div>
+      <span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span></header>
+      <div className="list">
+      <ul>
+      {this.state.notes.map((note) => this.renderNote(note))}
       </ul></div></div>)
   }
 }

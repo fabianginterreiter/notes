@@ -119,8 +119,10 @@ class Tags extends React.Component {
 
   render() {
     return (<div className="tags panel" style={this.state.style}>
-      <header>
-      <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
+      <header><i className="fa fa-tags" />
+      <div className="searchbar">
+        <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
+      </div>
       <span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span>
       </header>
       <div className="list">

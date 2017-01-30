@@ -23,6 +23,17 @@ header {
   padding: 12px;
   z-index: 200;
   position: relative;
+
+  div.searchbar {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 12px;
+
+    input {
+      width: 100%;
+    }
+  }
 }
 
 .right {

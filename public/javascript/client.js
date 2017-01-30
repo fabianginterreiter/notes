@@ -561,7 +561,7 @@
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          'Cat',
+	          _react2.default.createElement('i', { className: 'fa fa-folder-o' }),
 	          _react2.default.createElement(
 	            'span',
 	            { onClick: this.handleClose.bind(this), className: 'right' },
@@ -788,7 +788,12 @@
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' }),
+	          _react2.default.createElement('i', { className: 'fa fa-tags' }),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'searchbar' },
+	            _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' })
+	          ),
 	          _react2.default.createElement(
 	            'span',
 	            { onClick: this.handleClose.bind(this), className: 'right' },
@@ -865,6 +870,7 @@
 
 	    _this.state = {
 	      notes: [],
+	      filter: '',
 	      style: {}
 	    };
 	    return _this;
@@ -916,6 +922,39 @@
 	      _PanelsStore2.default.setNotes(false);
 	    }
 	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      this.setState({
+	        filter: e.target.value
+	      });
+	    }
+	  }, {
+	    key: 'renderNote',
+	    value: function renderNote(note) {
+	      if (!note.title.toLowerCase().includes(this.state.filter.toLowerCase())) {
+	        return;
+	      }
+
+	      return _react2.default.createElement(
+	        'li',
+	        { key: note.file },
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: this.getUrl(note), className: this.props.file === note.file ? 'active' : '' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'title' },
+	            note.title ? note.title : note.basename
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'date' },
+	            (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
+	          )
+	        )
+	      );
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this4 = this;
@@ -926,7 +965,12 @@
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          'Notes',
+	          _react2.default.createElement('i', { className: 'fa fa-file-text-o' }),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'searchbar' },
+	            _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' })
+	          ),
 	          _react2.default.createElement(
 	            'span',
 	            { onClick: this.handleClose.bind(this), className: 'right' },
@@ -940,24 +984,7 @@
 	            'ul',
 	            null,
 	            this.state.notes.map(function (note) {
-	              return _react2.default.createElement(
-	                'li',
-	                { key: note.file },
-	                _react2.default.createElement(
-	                  _reactRouter.Link,
-	                  { to: _this4.getUrl(note), className: _this4.props.file === note.file ? 'active' : '' },
-	                  _react2.default.createElement(
-	                    'div',
-	                    { className: 'title' },
-	                    note.title ? note.title : note.basename
-	                  ),
-	                  _react2.default.createElement(
-	                    'span',
-	                    { className: 'date' },
-	                    (0, _moment2.default)(note.updated_at).format('MMMM Do YYYY, h:mm:ss a')
-	                  )
-	                )
-	              );
+	              return _this4.renderNote(note);
 	            })
 	          )
 	        )

@@ -21,6 +21,13 @@ header {
   padding: 12px;
   z-index: 200;
   position: relative; }
+  header div.searchbar {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 12px; }
+    header div.searchbar input {
+      width: 100%; }
 
 .right {
   float: right; }
