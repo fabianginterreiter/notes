@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import PanelsStore from '../stores/PanelsStore';
 
 class Tags extends React.Component {
   constructor(props) {
@@ -7,12 +8,26 @@ class Tags extends React.Component {
     this.state = {
       tags: [],
       filter: '',
-      addTags: []
+      addTags: [],
+      style: {}
     }
   }
 
   componentDidMount() {
     this.componentWillReceiveProps(this.props);
+
+    PanelsStore.addChangeListener(this, (e) => {
+      this.setState({
+        style: {
+          width: (e.tags ? '199' : '0') + 'px',
+          left: (e.categories ? '200' : '0') + 'px'
+        }
+      })
+    });
+  }
+
+  componentWillUnmount() {
+    PanelsStore.removeChangeListener(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -98,9 +113,16 @@ class Tags extends React.Component {
     return this.contains(t, tag);
   }
 
+  handleClose() {
+    PanelsStore.setTags(false);
+  }
+
   render() {
-    return (<div className="tags panel">
-      <header><input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" /></header>
+    return (<div className="tags panel" style={this.state.style}>
+      <header>
+      <input type="text" onChange={this.handleChange.bind(this)} value={this.state.filter} placeholder="Filter" />
+      <span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span>
+      </header>
       <div className="list">
       <ul>
         <li><Link to={window.location.pathname + (this.props.category ? '?category=' + this.props.category : '')} className={(!this.props.tags ? 'active' : '')}>All</Link></li>

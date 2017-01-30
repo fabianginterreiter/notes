@@ -31,7 +31,7 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div>
         <Categories category={this.state.category} file={this.state.file} />
         <Tags category={this.state.category} tags={this.state.tags} file={this.state.file} />
         <Notes category={this.state.category} tags={this.state.tags} file={this.state.file} />

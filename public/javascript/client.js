@@ -404,7 +404,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'container' },
+	        null,
 	        _react2.default.createElement(_Categories2.default, { category: this.state.category, file: this.state.file }),
 	        _react2.default.createElement(_Tags2.default, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
 	        _react2.default.createElement(_Notes2.default, { category: this.state.category, tags: this.state.tags, file: this.state.file }),
@@ -432,6 +432,10 @@
 
 	var _reactRouter = __webpack_require__(4);
 
+	var _PanelsStore = __webpack_require__(124);
+
+	var _PanelsStore2 = _interopRequireDefault(_PanelsStore);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -449,7 +453,8 @@
 	    var _this = _possibleConstructorReturn(this, (Categories.__proto__ || Object.getPrototypeOf(Categories)).call(this, props));
 
 	    _this.state = {
-	      categories: []
+	      categories: [],
+	      style: {}
 	    };
 	    return _this;
 	  }
@@ -466,6 +471,19 @@
 	          categories: categories
 	        });
 	      });
+
+	      _PanelsStore2.default.addChangeListener(this, function (e) {
+	        _this2.setState({
+	          style: {
+	            width: (e.categories ? '199' : '0') + 'px'
+	          }
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      _PanelsStore2.default.removeChangeListener(this);
 	    }
 	  }, {
 	    key: 'toggleCategory',
@@ -529,15 +547,26 @@
 	      return result;
 	    }
 	  }, {
+	    key: 'handleClose',
+	    value: function handleClose() {
+	      _PanelsStore2.default.setCategories(false);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'categories panel' },
+	        { className: 'categories panel', style: this.state.style },
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          'Cat'
+	          'Cat',
+	          _react2.default.createElement(
+	            'span',
+	            { onClick: this.handleClose.bind(this), className: 'right' },
+	            _react2.default.createElement('i', { className: 'fa fa-times' })
+	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -581,6 +610,10 @@
 
 	var _reactRouter = __webpack_require__(4);
 
+	var _PanelsStore = __webpack_require__(124);
+
+	var _PanelsStore2 = _interopRequireDefault(_PanelsStore);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -600,7 +633,8 @@
 	    _this.state = {
 	      tags: [],
 	      filter: '',
-	      addTags: []
+	      addTags: [],
+	      style: {}
 	    };
 	    return _this;
 	  }
@@ -608,25 +642,41 @@
 	  _createClass(Tags, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      var _this2 = this;
+
 	      this.componentWillReceiveProps(this.props);
+
+	      _PanelsStore2.default.addChangeListener(this, function (e) {
+	        _this2.setState({
+	          style: {
+	            width: (e.tags ? '199' : '0') + 'px',
+	            left: (e.categories ? '200' : '0') + 'px'
+	          }
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      _PanelsStore2.default.removeChangeListener(this);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var category = nextProps.category ? nextProps.category : '';
 	      fetch('/api/tags/' + category).then(function (result) {
 	        return result.json();
 	      }).then(function (tags) {
-	        return _this2.setState({ tags: tags });
+	        return _this3.setState({ tags: tags });
 	      });
 
 	      if (nextProps.tags) {
 	        fetch('/api/tags/' + category + '?tags=' + nextProps.tags).then(function (result) {
 	          return result.json();
 	        }).then(function (tags) {
-	          return _this2.setState({ addTags: tags });
+	          return _this3.setState({ addTags: tags });
 	        });
 	      } else {
 	        this.setState({ addTags: [] });
@@ -723,17 +773,27 @@
 	      return this.contains(t, tag);
 	    }
 	  }, {
+	    key: 'handleClose',
+	    value: function handleClose() {
+	      _PanelsStore2.default.setTags(false);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'tags panel' },
+	        { className: 'tags panel', style: this.state.style },
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' })
+	          _react2.default.createElement('input', { type: 'text', onChange: this.handleChange.bind(this), value: this.state.filter, placeholder: 'Filter' }),
+	          _react2.default.createElement(
+	            'span',
+	            { onClick: this.handleClose.bind(this), className: 'right' },
+	            _react2.default.createElement('i', { className: 'fa fa-times' })
+	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -752,7 +812,7 @@
 	            ),
 	            _react2.default.createElement('li', { className: 'divider' }),
 	            this.state.tags.map(function (tag) {
-	              return _this3.renderTag(tag);
+	              return _this4.renderTag(tag);
 	            })
 	          )
 	        )
@@ -783,6 +843,10 @@
 
 	var _moment2 = _interopRequireDefault(_moment);
 
+	var _PanelsStore = __webpack_require__(124);
+
+	var _PanelsStore2 = _interopRequireDefault(_PanelsStore);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -800,7 +864,8 @@
 	    var _this = _possibleConstructorReturn(this, (Notes.__proto__ || Object.getPrototypeOf(Notes)).call(this, props));
 
 	    _this.state = {
-	      notes: []
+	      notes: [],
+	      style: {}
 	    };
 	    return _this;
 	  }
@@ -808,19 +873,36 @@
 	  _createClass(Notes, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      var _this2 = this;
+
 	      this.componentWillReceiveProps(this.props);
+
+	      _PanelsStore2.default.addChangeListener(this, function (e) {
+	        _this2.setState({
+	          style: {
+	            width: (e.notes ? '299' : '0') + 'px',
+	            left: (e.categories ? 200 : 0) + (e.tags ? 200 : 0) + 'px'
+	          }
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      _PanelsStore2.default.removeChangeListener(this);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var category = nextProps.category ? nextProps.category : '';
 	      var url = '/api/notes' + category + (nextProps.tags ? '?tags=' + nextProps.tags : '');
 	      fetch(url).then(function (result) {
 	        return result.json();
 	      }).then(function (notes) {
-	        return _this2.setState({ notes: notes });
+	        _this3.setState({ notes: notes });
+	        _PanelsStore2.default.setNotes(true);
 	      });
 	    }
 	  }, {
@@ -829,17 +911,27 @@
 	      return note.file + (this.props.tags ? '?tags=' + this.props.tags : '') + (this.props.category ? (this.props.tags ? '&' : '?') + 'category=' + this.props.category : '');
 	    }
 	  }, {
+	    key: 'handleClose',
+	    value: function handleClose() {
+	      _PanelsStore2.default.setNotes(false);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'notes panel' },
+	        { className: 'notes panel', style: this.state.style },
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          'Notes'
+	          'Notes',
+	          _react2.default.createElement(
+	            'span',
+	            { onClick: this.handleClose.bind(this), className: 'right' },
+	            _react2.default.createElement('i', { className: 'fa fa-times' })
+	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -853,7 +945,7 @@
 	                { key: note.file },
 	                _react2.default.createElement(
 	                  _reactRouter.Link,
-	                  { to: _this3.getUrl(note), className: _this3.props.file === note.file ? 'active' : '' },
+	                  { to: _this4.getUrl(note), className: _this4.props.file === note.file ? 'active' : '' },
 	                  _react2.default.createElement(
 	                    'div',
 	                    { className: 'title' },
@@ -15796,6 +15888,10 @@
 
 	var _reactMarkdown2 = _interopRequireDefault(_reactMarkdown);
 
+	var _PanelsStore = __webpack_require__(124);
+
+	var _PanelsStore2 = _interopRequireDefault(_PanelsStore);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -15813,7 +15909,8 @@
 	    var _this = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
 
 	    _this.state = {
-	      note: null
+	      note: null,
+	      style: {}
 	    };
 	    return _this;
 	  }
@@ -15821,12 +15918,27 @@
 	  _createClass(Note, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      var _this2 = this;
+
 	      this.componentWillReceiveProps(this.props);
+
+	      _PanelsStore2.default.addChangeListener(this, function (e) {
+	        _this2.setState({
+	          style: {
+	            left: (e.categories ? 200 : 0) + (e.tags ? 200 : 0) + (e.notes ? 300 : 0) + 'px'
+	          }
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      _PanelsStore2.default.removeChangeListener(this);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      if (!nextProps.file) {
 	        return;
@@ -15835,7 +15947,7 @@
 	      fetch('/api/note' + nextProps.file).then(function (result) {
 	        return result.json();
 	      }).then(function (note) {
-	        return _this2.setState({ note: note });
+	        return _this3.setState({ note: note });
 	      });
 	    }
 	  }, {
@@ -15845,13 +15957,46 @@
 	        return _react2.default.createElement('span', null);
 	      }
 
+	      var buttons = [];
+
+	      if (!_PanelsStore2.default.getObject().categories) {
+	        buttons.push(_react2.default.createElement(
+	          'span',
+	          { key: 'categories', onClick: function onClick() {
+	              return _PanelsStore2.default.setCategories(true);
+	            } },
+	          _react2.default.createElement('i', { className: 'fa fa-folder-o' })
+	        ));
+	      }
+
+	      if (!_PanelsStore2.default.getObject().tags) {
+	        buttons.push(_react2.default.createElement(
+	          'span',
+	          { key: 'tags', onClick: function onClick() {
+	              return _PanelsStore2.default.setTags(true);
+	            } },
+	          _react2.default.createElement('i', { className: 'fa fa-tags' })
+	        ));
+	      }
+
+	      if (!_PanelsStore2.default.getObject().notes) {
+	        buttons.push(_react2.default.createElement(
+	          'span',
+	          { key: 'notes', onClick: function onClick() {
+	              return _PanelsStore2.default.setNotes(true);
+	            } },
+	          _react2.default.createElement('i', { className: 'fa fa-file-text-o' })
+	        ));
+	      }
+
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'note' },
+	        { className: 'note', style: this.state.style },
 	        _react2.default.createElement(
 	          'header',
 	          null,
-	          'Note'
+	          buttons,
+	          '\xA0'
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -15872,6 +16017,167 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = (__webpack_require__(2))(227);
+
+/***/ },
+/* 124 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _Dispatcher2 = __webpack_require__(125);
+
+	var _Dispatcher3 = _interopRequireDefault(_Dispatcher2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PanelsStores = function (_Dispatcher) {
+	  _inherits(PanelsStores, _Dispatcher);
+
+	  function PanelsStores() {
+	    _classCallCheck(this, PanelsStores);
+
+	    return _possibleConstructorReturn(this, (PanelsStores.__proto__ || Object.getPrototypeOf(PanelsStores)).call(this, {
+	      categories: true,
+	      tags: true,
+	      notes: true
+	    }));
+	  }
+
+	  _createClass(PanelsStores, [{
+	    key: 'setCategories',
+	    value: function setCategories(value) {
+	      _get(PanelsStores.prototype.__proto__ || Object.getPrototypeOf(PanelsStores.prototype), 'getObject', this).call(this).categories = value;
+	      _get(PanelsStores.prototype.__proto__ || Object.getPrototypeOf(PanelsStores.prototype), 'dispatch', this).call(this);
+	    }
+	  }, {
+	    key: 'setTags',
+	    value: function setTags(value) {
+	      _get(PanelsStores.prototype.__proto__ || Object.getPrototypeOf(PanelsStores.prototype), 'getObject', this).call(this).tags = value;
+	      _get(PanelsStores.prototype.__proto__ || Object.getPrototypeOf(PanelsStores.prototype), 'dispatch', this).call(this);
+	    }
+	  }, {
+	    key: 'setNotes',
+	    value: function setNotes(value) {
+	      _get(PanelsStores.prototype.__proto__ || Object.getPrototypeOf(PanelsStores.prototype), 'getObject', this).call(this).notes = value;
+	      _get(PanelsStores.prototype.__proto__ || Object.getPrototypeOf(PanelsStores.prototype), 'dispatch', this).call(this);
+	    }
+	  }]);
+
+	  return PanelsStores;
+	}(_Dispatcher3.default);
+
+	module.exports = new PanelsStores();
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var __next_objid = 0;
+
+	var Dispatcher = function () {
+	  function Dispatcher(playload) {
+	    _classCallCheck(this, Dispatcher);
+
+	    this._callbacks = {};
+	    this._payload = playload;
+	    this._takeover = null;
+	  }
+
+	  _createClass(Dispatcher, [{
+	    key: "_objectId",
+	    value: function _objectId(object) {
+	      if (object == null) {
+	        return null;
+	      }
+
+	      if (object.__obj_id == null) {
+	        object.__obj_id = ++__next_objid;
+	      }
+	      return object.__obj_id;
+	    }
+	  }, {
+	    key: "addChangeListener",
+	    value: function addChangeListener(object, callback) {
+	      var id = this._objectId(object);
+	      this._callbacks[id] = callback;
+	      return id;
+	    }
+	  }, {
+	    key: "removeChangeListener",
+	    value: function removeChangeListener(object) {
+	      var id = this._objectId(object);
+	      delete this._callbacks[id];
+	    }
+	  }, {
+	    key: "dispatch",
+	    value: function dispatch() {
+	      var payload = this.getObject();
+
+	      if (this._takeover && this._callbacks[this._takeover]) {
+	        return this._callbacks[this._takeover](payload);
+	      }
+
+	      for (var id in this._callbacks) {
+	        this._callbacks[id](payload);
+	      }
+	    }
+	  }, {
+	    key: "setObject",
+	    value: function setObject(payload) {
+	      this._payload = payload;
+	      this.dispatch();
+	    }
+	  }, {
+	    key: "getObject",
+	    value: function getObject() {
+	      return this._payload;
+	    }
+	  }, {
+	    key: "take",
+	    value: function take(object) {
+	      if (this._takeover) {
+	        return;
+	      }
+
+	      if (!object.__obj_id) {
+	        return;
+	      }
+
+	      if (!this._callbacks[object.__obj_id]) {
+	        return;
+	      }
+
+	      this._takeover = object.__obj_id;
+	    }
+	  }, {
+	    key: "release",
+	    value: function release(object) {
+	      if (this._takeover === object.__obj_id) {
+	        this._takeover = null;
+	      }
+	    }
+	  }]);
+
+	  return Dispatcher;
+	}();
+
+	module.exports = Dispatcher;
 
 /***/ }
 /******/ ]);

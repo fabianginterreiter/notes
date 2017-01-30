@@ -14,20 +14,6 @@ body {
   font-style: normal;
 }
 
-.container {
-  display: flex;
-  flex-direction: row;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  >div {
-    flex-grow: 0;
-  }
-}
-
 header {
   background-color: #222;
   margin-bottom: 10px;
@@ -37,6 +23,10 @@ header {
   padding: 12px;
   z-index: 200;
   position: relative;
+}
+
+.right {
+  float: right;  
 }
 
 .list {
@@ -49,9 +39,12 @@ header {
 }
 
 .categories {
-  width: 300px;
   background-color: #383838;
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 199px;
 
   ul {
     padding: 0;
@@ -100,13 +93,17 @@ header {
 
 .panel {
   border-right: 1px solid #565656;
-  width: 300px;
+  transition: 0.3s;
+  overflow: hidden;
 }
 
 .tags {
-  width: 300px;
   background-color: #e5e5e5;
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 200px;
+  width: 199px;
 
   ul {
     margin: 0;
@@ -136,8 +133,11 @@ header {
 }
 
 .notes {
-  width: 300px;
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 400px;
+  width: 299px;
 
   ul {
     margin: 0;
@@ -171,8 +171,12 @@ header {
 }
 
 .note {
-  width: 100%;
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 700px;
+  transition: 0.3s;
 
   .content {
     position: absolute;

@@ -12,17 +12,6 @@ body {
   color: #333;
   font-style: normal; }
 
-.container {
-  display: flex;
-  flex-direction: row;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0; }
-  .container > div {
-    flex-grow: 0; }
-
 header {
   background-color: #222;
   margin-bottom: 10px;
@@ -33,6 +22,9 @@ header {
   z-index: 200;
   position: relative; }
 
+.right {
+  float: right; }
+
 .list {
   position: absolute;
   top: 50px;
@@ -42,9 +34,12 @@ header {
   overflow-y: auto; }
 
 .categories {
-  width: 300px;
   background-color: #383838;
-  position: relative; }
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 199px; }
   .categories ul {
     padding: 0;
     margin: 0; }
@@ -77,12 +72,16 @@ header {
 
 .panel {
   border-right: 1px solid #565656;
-  width: 300px; }
+  transition: 0.3s;
+  overflow: hidden; }
 
 .tags {
-  width: 300px;
   background-color: #e5e5e5;
-  position: relative; }
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 200px;
+  width: 199px; }
   .tags ul {
     margin: 0;
     padding: 0; }
@@ -101,8 +100,11 @@ header {
     margin: 5px 0; }
 
 .notes {
-  width: 300px;
-  position: relative; }
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 400px;
+  width: 299px; }
   .notes ul {
     margin: 0;
     padding: 0; }
@@ -123,8 +125,12 @@ header {
     background-color: #a5c7ff; }
 
 .note {
-  width: 100%;
-  position: relative; }
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 700px;
+  transition: 0.3s; }
   .note .content {
     position: absolute;
     top: 50px;

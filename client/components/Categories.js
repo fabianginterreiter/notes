@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router';
+import PanelsStore from '../stores/PanelsStore';
 
 class Categories extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      categories: []
+      categories: [],
+      style: {}
     }
   }
 
@@ -13,6 +15,18 @@ class Categories extends React.Component {
     fetch('/api/categories').then((result) => result.json()).then((categories) => this.setState({
       categories: categories
     }));
+
+    PanelsStore.addChangeListener(this, (e) => {
+      this.setState({
+        style: {
+          width: (e.categories ? '199' : '0') + 'px'
+        }
+      })
+    });
+  }
+
+  componentWillUnmount() {
+    PanelsStore.removeChangeListener(this);
   }
 
   toggleCategory(e, category) {
@@ -56,9 +70,15 @@ class Categories extends React.Component {
     return result;
   }
 
+  handleClose() {
+    PanelsStore.setCategories(false);
+  }
+
   render() {
-    return (<div className="categories panel">
-        <header>Cat</header>
+
+
+    return (<div className="categories panel" style={this.state.style}>
+        <header>Cat<span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span></header>
         <div className="list">
         <ul>
         <li><Link to={window.location.pathname} className={(!this.props.category ? 'active' : '')}>All</Link></li>
