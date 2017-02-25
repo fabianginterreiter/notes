@@ -148,3 +148,5 @@ header {
     bottom: 0;
     overflow: auto;
     padding: 10px; }
+    .note .content img {
+      max-width: 100%; }
