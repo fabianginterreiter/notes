@@ -79,8 +79,6 @@ class Categories extends React.Component {
   }
 
   render() {
-
-
     return (<div className="categories panel" style={this.state.style}>
         <header><i className="fa fa-folder-o" /><span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span></header>
         <div className="list">
