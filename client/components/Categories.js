@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import PanelsStore from '../stores/PanelsStore';
+import ReloadListener from '../stores/ReloadListener';
 
 class Categories extends React.Component {
   constructor(props) {
@@ -12,15 +13,21 @@ class Categories extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/categories').then((result) => result.json()).then((categories) => this.setState({
-      categories: categories
-    }));
+    this.load();
 
     PanelsStore.addChangeListener(this, (e) => 
       this.setState({
         style:this.createStyle(e)
       })
     );
+
+    ReloadListener.addChangeListener(this, this.load.bind(this));
+  }
+
+  load() {
+    fetch('/api/categories').then((result) => result.json()).then((categories) => this.setState({
+      categories: categories
+    }));
   }
 
   createStyle(e) {
@@ -31,6 +38,7 @@ class Categories extends React.Component {
 
   componentWillUnmount() {
     PanelsStore.removeChangeListener(this);
+    ReloadListener.removeChangeListener(this);
   }
 
   toggleCategory(e, category) {

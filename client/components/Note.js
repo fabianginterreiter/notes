@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import ReactMarkdown from 'react-markdown';
 import PanelsStore from '../stores/PanelsStore';
+import ReloadListener from '../stores/ReloadListener';
 
 class Note extends React.Component {
   constructor(props) {
@@ -42,6 +43,10 @@ class Note extends React.Component {
   }
 
   handleReload() {
+    fetch('/api/reload').then(() => {
+      console.log("reload");
+      ReloadListener.dispatch();
+    });
   }
 
   render() {

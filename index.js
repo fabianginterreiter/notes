@@ -34,6 +34,10 @@ app.get('/api/note/*', (req, res) => {
   notes.getNote(req.params[0]).then((file) => res.send(file));
 });
 
+app.get('/api/reload', (req, res) => {
+  notes.init().then(() => res.status(200).send('OK')).catch((e) => res.status(400));
+});
+
 app.use(express.static('public'));
 
 app.use('*', (req, res, next) => {
