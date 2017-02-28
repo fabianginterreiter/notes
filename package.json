@@ -10,6 +10,7 @@
     "build-javascript-dll": "webpack --config=webpack.dll.js",
     "watch-javascript": "webpack -d",
     "watch": "npm run watch-javascript & npm run watch-css",
+    "build": "npm run build-javascript & npm run build-css",
     "test": "mocha",
     "start": "node index.js"
   },

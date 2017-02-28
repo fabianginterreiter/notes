@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import PanelsStore from '../stores/PanelsStore';
+import ReloadListener from '../stores/ReloadListener';
 
 class Tags extends React.Component {
   constructor(props) {
@@ -21,6 +22,10 @@ class Tags extends React.Component {
         style:this.createStyle(e)
       })
     );
+
+    ReloadListener.addChangeListener(this, () => {
+      this.componentWillReceiveProps(this.props);
+    });
   }
 
   createStyle(e) {
@@ -32,6 +37,7 @@ class Tags extends React.Component {
 
   componentWillUnmount() {
     PanelsStore.removeChangeListener(this);
+    ReloadListener.removeChangeListener(this);
   }
 
   componentWillReceiveProps(nextProps) {
