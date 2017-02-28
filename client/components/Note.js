@@ -41,6 +41,9 @@ class Note extends React.Component {
     fetch('/api/note' + nextProps.file).then((result) => result.json()).then((note) => this.setState({note:note}));
   }
 
+  handleReload() {
+  }
+
   render() {
     var buttons = [];
 
@@ -62,7 +65,7 @@ class Note extends React.Component {
     }
 
     return (<div className="note" style={this.state.style}>
-        <header>{buttons}&nbsp;</header>
+        <header>{buttons}&nbsp;<span onClick={this.handleReload.bind(this)} className="right"><i className="fa fa-refresh" /></span></header>
         {content}
       </div>)
   }
