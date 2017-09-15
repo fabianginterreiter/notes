@@ -803,9 +803,189 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	module.exports = (__webpack_require__(4))(1);
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
 
 /***/ },
 /* 9 */
@@ -938,7 +1118,8 @@
 
 	    _this.state = {
 	      categories: [],
-	      style: _this.createStyle(_PanelsStore2.default.getObject())
+	      style: _this.createStyle(_PanelsStore2.default.getObject()),
+	      open: []
 	    };
 	    return _this;
 	  }
@@ -988,8 +1169,23 @@
 	    key: 'toggleCategory',
 	    value: function toggleCategory(e, category) {
 	      e.preventDefault();
-	      category.open = !category.open;
-	      this.forceUpdate();
+
+	      var list = this.state.open;
+
+	      if (this.isOpen(category)) {
+	        list.splice(this.state.open.indexOf(category.dir), 1);
+	      } else {
+	        list.push(category.dir);
+	      }
+
+	      this.setState({
+	        open: list
+	      });
+	    }
+	  }, {
+	    key: 'isOpen',
+	    value: function isOpen(category) {
+	      return this.state.open.indexOf(category.dir) >= 0;
 	    }
 	  }, {
 	    key: 'renderCategories',
@@ -1015,7 +1211,7 @@
 	          ));
 	        } else {
 	          var sub = null;
-	          if (category.open) {
+	          if (_this4.isOpen(category)) {
 	            sub = _react2.default.createElement(
 	              'ul',
 	              null,
@@ -1036,7 +1232,7 @@
 	              { className: 'badge', onClick: function onClick(e) {
 	                  return _this4.toggleCategory(e, category);
 	                } },
-	              _react2.default.createElement('i', { className: 'fa fa-chevron-' + (category.open ? 'down' : 'up') })
+	              _react2.default.createElement('i', { className: 'fa fa-chevron-' + (_this4.isOpen(category) ? 'down' : 'up') })
 	            ),
 	            sub
 	          ));
@@ -1053,6 +1249,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      console.log(this.state.open);
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'categories panel', style: this.state.style },
@@ -17129,6 +17327,7 @@
 	    var _this = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
 
 	    _this.state = {
+	      edit: null,
 	      note: null,
 	      style: _this.createStyle(_PanelsStore2.default.getObject())
 	    };
@@ -17179,13 +17378,14 @@
 	    key: 'handleReload',
 	    value: function handleReload() {
 	      fetch('/api/reload').then(function () {
-	        console.log("reload");
 	        _ReloadListener2.default.dispatch();
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this4 = this;
+
 	      var buttons = [];
 
 	      if (!_PanelsStore2.default.getObject().categories) {
@@ -17221,13 +17421,53 @@
 	        ));
 	      }
 
+	      if (this.state.edit) {
+	        buttons.push(_react2.default.createElement(
+	          'span',
+	          { key: 'cancel', onClick: function onClick() {
+	              return _this4.setState({ edit: null });
+	            } },
+	          'Cancel'
+	        ));
+	        buttons.push(_react2.default.createElement(
+	          'span',
+	          { key: 'save', onClick: function onClick() {
+	              return _this4.handleSave();
+	            } },
+	          'Save'
+	        ));
+	      } else {
+	        buttons.push(_react2.default.createElement(
+	          'span',
+	          { key: 'edit', onClick: function onClick() {
+	              return _this4.setState({ edit: _this4.state.note.content });
+	            } },
+	          'Edit'
+	        ));
+	      }
+
 	      var content = null;
 	      if (this.state.note) {
-	        content = _react2.default.createElement(
-	          'div',
-	          { className: 'content' },
-	          _react2.default.createElement(_reactMarkdown2.default, { source: this.state.note.content })
-	        );
+
+	        if (this.state.edit) {
+	          content = _react2.default.createElement(
+	            'div',
+	            { className: 'content' },
+	            _react2.default.createElement('textarea', { value: this.state.edit, onChange: function onChange(event) {
+	                return _this4.handleChange(event);
+	              } })
+	          );
+	        } else {
+	          content = _react2.default.createElement(
+	            'div',
+	            { className: 'content' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'text' },
+	              _react2.default.createElement(_reactMarkdown2.default, { source: this.state.note.content })
+	            )
+	          );
+	        }
 	      }
 
 	      return _react2.default.createElement(
@@ -17246,6 +17486,38 @@
 	        ),
 	        content
 	      );
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(event) {
+	      this.setState({
+	        edit: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handleSave',
+	    value: function handleSave() {
+	      var _this5 = this;
+
+	      var note = this.state.note;
+	      note.content = this.state.edit;
+
+	      fetch('/api/note' + this.props.file, {
+	        body: JSON.stringify(note),
+	        headers: {
+	          "Accept": "application/json",
+	          "Content-Type": "application/json"
+	        },
+	        method: "PUT"
+	      }).then(function (result) {
+	        return result.json();
+	      }).then(function (object) {
+	        _ReloadListener2.default.dispatch();
+	        _this5.setState({
+	          note: object,
+	          edit: null
+	        });
+	      });
 	    }
 	  }]);
 

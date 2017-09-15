@@ -132,7 +132,8 @@ header {
     .notes a .date {
       font-size: 0.8em; }
   .notes a.active {
-    background-color: #a5c7ff; }
+    background-color: #a5c7ff;
+    border-left: 5px solid red; }
 
 .note {
   position: fixed;
@@ -146,7 +147,19 @@ header {
     left: 0;
     right: 0;
     bottom: 0;
-    overflow: auto;
+    overflow: hidden;
     padding: 10px; }
     .note .content img {
       max-width: 100%; }
+    .note .content textarea {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0; }
+    .note .content .text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: auto; }

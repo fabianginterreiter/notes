@@ -36,7 +36,7 @@ header {
 }
 
 .right {
-  float: right;  
+  float: right;
 }
 
 .list {
@@ -184,8 +184,9 @@ header {
     }
   }
 
-    a.active {
+  a.active {
     background-color: #a5c7ff;
+    border-left: 5px solid red;
   }
 }
 
@@ -202,11 +203,27 @@ header {
     left: 0;
     right: 0;
     bottom: 0;
-    overflow: auto;
+    overflow: hidden;
     padding: 10px;
 
     img {
       max-width: 100%;
+    }
+
+    textarea {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: auto;
     }
   }
 }

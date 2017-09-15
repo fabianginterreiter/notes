@@ -8,14 +8,15 @@ class Categories extends React.Component {
     super(props);
     this.state = {
       categories: [],
-      style: this.createStyle(PanelsStore.getObject())
+      style: this.createStyle(PanelsStore.getObject()),
+      open: []
     }
   }
 
   componentDidMount() {
     this.load();
 
-    PanelsStore.addChangeListener(this, (e) => 
+    PanelsStore.addChangeListener(this, (e) =>
       this.setState({
         style:this.createStyle(e)
       })
@@ -43,8 +44,22 @@ class Categories extends React.Component {
 
   toggleCategory(e, category) {
     e.preventDefault();
-    category.open = !category.open;
-    this.forceUpdate();
+
+    const list = this.state.open;
+
+    if (this.isOpen(category)) {
+      list.splice(this.state.open.indexOf(category.dir), 1);
+    } else {
+      list.push(category.dir);
+    }
+
+    this.setState({
+      open: list
+    })
+  }
+
+  isOpen(category) {
+    return this.state.open.indexOf(category.dir) >= 0;
   }
 
   renderCategories(categories, deep) {
@@ -62,7 +77,7 @@ class Categories extends React.Component {
           </li>)
       } else {
         var sub = null;
-        if (category.open) {
+        if (this.isOpen(category)) {
           sub = (<ul>{this.renderCategories(category.categories, deep + 1)}</ul>);
         }
 
@@ -72,10 +87,10 @@ class Categories extends React.Component {
               {category.title}
             </Link>
             <span className="badge" onClick={(e) => this.toggleCategory(e, category)}>
-              <i className={'fa fa-chevron-' + (category.open ? 'down' : 'up')} />
+              <i className={'fa fa-chevron-' + (this.isOpen(category) ? 'down' : 'up')} />
             </span>
             {sub}
-          </li>)  
+          </li>)
       }
     });
 
@@ -87,6 +102,8 @@ class Categories extends React.Component {
   }
 
   render() {
+    console.log(this.state.open);
+
     return (<div className="categories panel" style={this.state.style}>
         <header><i className="fa fa-folder-o" /><span onClick={this.handleClose.bind(this)} className="right"><i className="fa fa-times" /></span></header>
         <div className="list">
